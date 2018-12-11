@@ -1,0 +1,22 @@
+#word {
+	margin: 10px 10% 0px 10%;
+	text-align: center;
+}
+
+#pict_hangman {
+	margin: 10px 10% 0px 10%;
+	text-align: center;
+}
+
+#pict_img {
+
+}
+
+#word_label {
+	font-size: 14pt;
+}
+
+#word_lettered {
+	text-align: center;
+	margin: 10px 10% 0px 10%;
+}
