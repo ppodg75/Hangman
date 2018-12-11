@@ -1,5 +1,7 @@
 package server;
 
+import static java.util.Optional.of;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import exception.UnknownPlayerException;
 import game.Game;
 import game.Player;
 import game.PlayerStatus;
@@ -134,5 +137,23 @@ public class GameServer {
 		}
 		return null;
 	}
+	
+	public Player findPlayerByName(String name) {
+		return players.stream()
+				  .filter(name::equals)
+				  .findFirst()
+				          .orElseThrow(() -> { return new UnknownPlayerException(name); } );
+	}
+	
+	public void setPlayerName(Player player, String name) {
+		player.setName(name);
+		server.sendCommandRefershPlayerListToAll();
+	}
+	
+	
+	public List<Player> getPlayers() {
+		return players;
+	}
+	
 
 }

@@ -79,7 +79,23 @@ function disconnect(name) {
 	    });
 }
 
+//function submit_operation(operation, data) {
+//	console.log("operation: "+operation+"("+letter+")")
+//	form = $("main_form");
+//	$("operation").value(operation);
+//	$("data").value(data);
+//	form.submit(); 
+//	return true;	
+//}
 
 function guess_letter(letter) {
-//	alert("Letter: "+letter)
+	console.log("letter pressed: "+letter)
+//	submit_operation("letter", letter);
+}
+
+function submit() {
+  console.log("letter pressed: "+letter)
+  form = $("#main_form");
+  form.submit();
+  return true;
 }

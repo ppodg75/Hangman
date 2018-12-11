@@ -14,8 +14,7 @@
 	</div>
 </div>
 
-
-<div id="pict_hangman"><img src="xx" height="300px" width="300px"/></div>
+<div id="pict_hangman"><img src="img/funny.jpag" height="300px" /></div>
 
 <div id="word">
   <div class="word_label">Your word:</div>

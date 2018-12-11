@@ -35,23 +35,24 @@
 }
 
 #start .label {
-	margin: 10px 20% 10px 5px 5%;
+	margin: 10px 20% 10px 20%;
 	padding: 5px;	
 	text-align: center;
+	font-size: 12pt
 }
 
 #start .button {
-	margin: 10px 20% 10px 5px 5%;
+	margin: 50px 20% 10px 20%;
 	padding: 5px;	
 	text-align: center;
 }
 
 #start input {
-	font-size: 12pt;
+	font-size: 14pt;
 }
 
 #start button {
-	font-size: 18pt;
+	font-size: 12pt;
 }
 
 #userdata {

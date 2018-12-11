@@ -13,7 +13,7 @@
 		<span class="label">losts:</span> <span class="value">10</span>
 	</div>
 </div>
-<div id="pict_hangman"><img src="xx" height="300px" width="300px"/></div>
+<div id="pict_hangman"><img src="img/szub0.jpg" height="300px" /></div>
 
 <div id="word">
   <div class="word_label">Word to guess:</div>

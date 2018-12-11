@@ -1,4 +1,4 @@
-package server;
+package endpoint;
 
 import java.io.IOException;
 import java.util.Random;
@@ -12,6 +12,8 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import com.sun.security.ntlm.Client;
+
+import server.Server;
 
 @ServerEndpoint("/play")
 public class ClientWebSocket {
@@ -29,7 +31,6 @@ public class ClientWebSocket {
 		System.out.println("onOpen::" + session.getId());
 		peers.add(session);
 	}
-
 	
 	@OnClose
 	public void onClose(Session session) {
@@ -54,6 +55,10 @@ public class ClientWebSocket {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void sendToAll(String msg) {
+		peers.forEach( session -> { send(session,msg); });
 	}
 
 }

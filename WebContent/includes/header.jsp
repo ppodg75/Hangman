@@ -13,14 +13,10 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="js/main.js"></script>
-<script>
-  $( function() {
-   
-  } );
-  </script>
 </head>
 <body>
 	<div id="content">
 		<div id="title">Hangaman</div>
-		<form name="main_form" method="POST" action="/svt/do">
-		  <input type="hidden" name="operation" value="none" /> <input type="hidden" name="oper_param" value="none" />
+		<form name="main_form" id="main_form" method="POST" action="/HangmanClient/pageDispach">
+		  <input type="hidden" name="operation" value="none" /> 
+		  <input type="hidden" name="data" value="none" />
