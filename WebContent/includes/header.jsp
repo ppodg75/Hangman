@@ -8,11 +8,13 @@
 <link rel="stylesheet" type="text/css" href="css/main.css" />
 <link rel="stylesheet" type="text/css" href="css/guess.css" />
 <link rel="stylesheet" type="text/css" href="css/word.css" />
+<link rel="stylesheet" type="text/css" href="css/list.css" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="js/main.js"></script>
+<script src="js/websocket.js"></script>
 </head>
 <body>
 	<div id="content">

@@ -1,3 +1,5 @@
+var baseUrlEndpoint = "http://" + document.location.host + "/HangmanServer";
+
 var list_busy = false;
 
 function do_guess_end_game() {
@@ -98,4 +100,8 @@ function submit() {
   form = $("#main_form");
   form.submit();
   return true;
+}
+
+function getEndpointUrl(epName) {
+	return baseUrlEndpoint + "/" + epName;
 }

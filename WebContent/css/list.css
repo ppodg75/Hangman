@@ -1,0 +1,13 @@
+#progress {
+	height: 25px;
+	width: 80%;
+	margin: 5px auto 5px auto;	
+	padding: 2px;
+	text-align: center;
+}
+
+.prg_element {
+	border-bottom: 2px solid blue;
+	margin: 0px;
+	width: 20%;
+}

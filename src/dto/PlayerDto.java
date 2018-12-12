@@ -2,8 +2,6 @@ package dto;
 
 import java.io.Serializable;
 
-import game.PlayerStatus;
-
 public class PlayerDto implements Serializable {
 	
 	private String name;
