@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
 <%@include file="includes/header.jsp" %>
 
+<script src="js/guess.js"></script>
+
+<input type="hidden" id="currentPage" name="currentPage" value="guess" />
+<input type="hidden" id="nextPage" name="nextPage" value=""guess"" />
+
 <div id="userdata">
     <div class="user_name">Ja</div>
 	<div class="user_points">
@@ -36,7 +41,7 @@
 	sb.append("<div class=\"line\">");
 	for(int i=0; i<letters.length(); i++) {
 		String c =  letters.substring(i,i+1);
-		sb.append("<button type=\"button\" onClick=\"guess_letter('"+c+"')\"");
+		sb.append("<button type=\"button\" id=\"letter"+c+"\" onClick=\"guess_letter('"+c+"', this);\"");
 		if (used.contains(c)) {
 			sb.append(" disabled title=\"a letter has been already used.\" ");
 		}

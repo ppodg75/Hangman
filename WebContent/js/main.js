@@ -2,26 +2,8 @@ var baseUrlEndpoint = "http://" + document.location.host + "/HangmanServer";
 
 var list_busy = false;
 
-function do_guess_end_game() {
-	console.log("end_game");
-}
-
-function guess_end_game() {
-$( "#dialog-confirm" ).dialog({
-      resizable: false,
-      height: "auto",
-      width: 400,
-      modal: true,
-      buttons: {
-        "YES": function() {
-          $( this ).dialog( "close" );
-          do_guess_end_game();
-        },
-        No: function() {
-          $( this ).dialog("close");
-        }
-      }
-    });
+function getEndpointUrl(epName) {
+	return baseUrlEndpoint + "/" + epName;
 }
 
 function do_accept_inv() {
@@ -81,27 +63,17 @@ function disconnect(name) {
 	    });
 }
 
-//function submit_operation(operation, data) {
-//	console.log("operation: "+operation+"("+letter+")")
-//	form = $("main_form");
-//	$("operation").value(operation);
-//	$("data").value(data);
-//	form.submit(); 
-//	return true;	
-//}
-
-function guess_letter(letter) {
-	console.log("letter pressed: "+letter)
-//	submit_operation("letter", letter);
+function submit_operation(operation, data) {
+	console.log("operation: "+operation+"("+data+")")
+	form = $("#main_form");
+	$("operation").val(operation);
+	$("data").val(data);
+	form.submit(); 
+	return true;	
 }
 
-function submit() {
-  console.log("letter pressed: "+letter)
-  form = $("#main_form");
-  form.submit();
-  return true;
-}
 
-function getEndpointUrl(epName) {
-	return baseUrlEndpoint + "/" + epName;
-}
+
+
+
+

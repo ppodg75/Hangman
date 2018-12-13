@@ -4,28 +4,14 @@ console.log(wsUri);
 
 var websocket = new WebSocket(wsUri);
 
-var msgId = 0
-var lastDt = ""
-
-function writeToScreen(message) {
-	console.log('writeToScreen')
-	innhtml = output.innerHTML
-	console.log('innerhtml: '+ innhtml)	
-	output.innerHTML = message + innhtml;
-}
-
-function writeMineMessage(dt, message) {
-	console.log('writeMineMessage: '+message)
-	writeToScreen("<div class='datetime'>"+dt+"</div><div class='mineTitle'>Ja</div><div class='mineBox'>" + message + "</div>");
-}
-
+console.log("connected");
 
 websocket.onerror = function(evt) {
 	onError(evt)
 };
 
 function onError(evt) {
-	writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+	console.log("ws: err");
 }
 
 websocket.onopen = function(evt) {
@@ -33,7 +19,7 @@ websocket.onopen = function(evt) {
 };
 
 function onOpen() {
-	// writeToScreen("Connected to " + wsUri);
+	console.log("ws: open")
 }
 
 websocket.onmessage = function(evt) {
@@ -41,9 +27,16 @@ websocket.onmessage = function(evt) {
 };
 
 function onMessage(evt) {
+	console.log("ws: on msg")
 }
 
-function sendMessage() {
-	msgId = Math.floor((Math.random() * 100000) + 1);
-	websocket.send(msgId + '$' + username.value + '$' + msg.value)	
+function sendMessage(msg) {
+	console.log('sendMessage: '+ msg)
+	websocket.send(msg)	
 }
+
+function sendOperation(oper, data) {
+	console.log('sendOperation: '+ oper)
+	sendMessage(oper+"#"+data)
+}
+

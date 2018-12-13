@@ -39,10 +39,10 @@ public class PageDispacherServlet extends HttpServlet {
 //	 	    RequestDispatcher requestDispatcher = request.getRequestDispatcher("list.jsp");
 //	 	    requestDispatcher.forward(request, response);
 //		}
-			if (!dispachToPage.isEmpty()) {
+		if (!dispachToPage.isEmpty()) {
 		 	    RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispachToPage);
 		 	    requestDispatcher.forward(request, response);
-			}
+		}
 	}
 
 }
