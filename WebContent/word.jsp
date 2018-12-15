@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
 <%@include file="includes/header.jsp" %>
 
+
+
 <input type="hidden" id="currentPage" name="currentPage" value="word" />
 <input type="hidden" id="nextPage" name="nextPage" value="guess" />
 

@@ -27,18 +27,11 @@ public class PageDispacherServlet extends HttpServlet {
 		
 		String oper = ofNullable(request.getParameter("operation")).orElse(defOperPage);
 		String data = ofNullable(request.getParameter("data")).orElse("");
+		String UID = ofNullable(request.getParameter("UID")).orElse("");
+		request.setAttribute("UID", UID);
 		
 		String dispachToPage = nextPageResolver.nextPage(request);		
-		
-// 	    RequestDispatcher requestDispatcher = request.getRequestDispatcher("list.jsp");
-// 	    requestDispatcher.forward(request, response);
-//		if (defOperPage.equals(oper)) {		
-//			String nextPage = ofNullable(request.getParameter("data")).orElse(request.getServletPath()); 
-			// String nextPage = ofNullable(request.getParameter("data")).orElse(request.getParameter("currentPage")); 
-//			System.out.println("forward to: "+nextPage);
-//	 	    RequestDispatcher requestDispatcher = request.getRequestDispatcher("list.jsp");
-//	 	    requestDispatcher.forward(request, response);
-//		}
+
 		if (!dispachToPage.isEmpty()) {
 		 	    RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispachToPage);
 		 	    requestDispatcher.forward(request, response);

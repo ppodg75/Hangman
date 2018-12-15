@@ -26,17 +26,13 @@ websocket.onmessage = function(evt) {
 	onMessage(evt)
 };
 
-function onMessage(evt) {
-	console.log("ws: on msg")
-}
+//function onMessage(evt) {
+//	console.log("ws: on msg")
+//}
 
-function sendMessage(msg) {
+function wsSendMessage(msg) {
 	console.log('sendMessage: '+ msg)
 	websocket.send(msg)	
 }
 
-function sendOperation(oper, data) {
-	console.log('sendOperation: '+ oper)
-	sendMessage(oper+"#"+data)
-}
 

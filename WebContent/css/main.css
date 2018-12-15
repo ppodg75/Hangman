@@ -47,6 +47,17 @@
 	text-align: center;
 }
 
+#start .message {
+	margin: 10px 20% 10px 20%;
+	padding: 5px;	
+	text-align: center;	
+}
+
+#start .error {
+	color: red;	
+}
+
+
 #start input {
 	font-size: 14pt;
 }
