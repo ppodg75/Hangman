@@ -15,12 +15,9 @@ function onError(evt) {
 }
 
 websocket.onopen = function(evt) {
-	onOpen(evt)
+	wsOnOpen(evt)
 };
 
-function onOpen() {
-	console.log("ws: open")
-}
 
 websocket.onmessage = function(evt) {
 	onMessage(evt)

@@ -1,3 +1,5 @@
+updateCurrentPage("list")
+
 $("#messageWait").hide();
 $("#dialog-disconnect").hide();
 
@@ -33,19 +35,23 @@ function buttonDisconnectClicked() {
 
 function showUser(user) {
 	console.log("showUser: " + user);
+	$("#user").html("Ja ("+user.name+")");
+	$("#user_points").html("Ja ("+user.name+")");
+	$("#user_wins").html("Ja ("+user.name+")");
+	$("#user_losts").html("Ja ("+user.name+")");
 }
 
-function refershPlayer() {
-	console.log("refreshList");
-	var urlUserByUID = getEndpointUrl("players") + "/byUID/" + getUID()
-			+ "/state"
-	$.ajax({
-		type : "GET",
-		url : urlUserByUID,
-		success : function(data) {
-			showUser(list)
-		}
-	})
+function refershPlayer(player) {
+	console.log("refershPlayer");
+	showUser(player)
+//	var urlGetPlayer = getEndpointUrl("players") + "/" + getUserName()			
+//	$.ajax({
+//		type : "GET",
+//		url : urlGetPlayer,
+//		success : function(data) {
+//			showUser(data)
+//		}
+//	})
 }
 
 function initProgress() {
@@ -70,7 +76,7 @@ function showProgress() {
 }
 
 function showList(l) {
-	console.log("showList: "+l);
+	console.log("showList: ");
 	$("#list").html(l)
 }
 
@@ -80,15 +86,19 @@ function refreshList() {
 		type : "GET",
 		url : getEndpointUrl("players"),
 		success : function(data) {
-			
-			console.log(" data successed: "+data)
+			console.log(" data successed: " + data)
 			var list = ""
 			var b = 0
+			var username = getUserName()
 			jQuery.each(data, function(index, itemData) {
-				if (index > 1) {
-					list += addToList(itemData, b)
+				if (itemData.name != username) {
+					if (index > 0) {
+						list += addToList(itemData, b)
+					}
+					b = 1 - b
+				} else {
+					refershPlayer(itemData)
 				}
-				b = 1 - b
 			});
 			showList(list)
 		}
@@ -111,7 +121,8 @@ function timeout() {
 	}, 500);
 }
 
-refreshList()
-timeout()
-
-refershPlayer()
+function wsOnOpen() {
+	console.log("wsOnOpen")
+	sendHello()
+	refreshList()
+}

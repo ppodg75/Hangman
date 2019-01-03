@@ -20,7 +20,11 @@
 	<div id="content">
 		<div id="title">Hangaman</div>
 		<form name="main_form" id="main_form" method="POST" action="/HangmanClient/pageDispach">
-		  <input type="hidden" name="operation" value="none" /> 
-		  <input type="hidden" name="data" value="none" />		  
-		  <input type="hidden" id="UID" name="UID" value="<%=request.getAttribute("UID")%>" />
+		  <input type="hidden" name="operation" id="operation" value="oper1" />   	      
+          <input type="hidden" name="data" id="data" value="data1" />		
+          <input type="hidden" id="currentPage" name="currentPage" value="" />
+ 
+  
+
+
 		  

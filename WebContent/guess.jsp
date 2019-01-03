@@ -3,9 +3,6 @@
 
 <script src="js/guess.js"></script>
 
-<input type="hidden" id="currentPage" name="currentPage" value="guess" />
-<input type="hidden" id="nextPage" name="nextPage" value=""guess"" />
-
 <div id="userdata">
     <div class="user_name">Ja</div>
 	<div class="user_points">

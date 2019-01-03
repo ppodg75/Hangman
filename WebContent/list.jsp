@@ -1,7 +1,7 @@
 <%@include file="includes/header.jsp"%>
 
-<input type="hidden" id="currentPage" name="currentPage" value="list" />
-<input type="hidden" id="nextPage" name="nextPage" value="word" />
+<% String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; %>
+<input type="hidden" id="username" name="username" value="<%= username %>" />
         
 <div id="userdata">
 	<div class="user_name" id="user">Ja</div>
