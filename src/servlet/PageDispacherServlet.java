@@ -30,6 +30,7 @@ public class PageDispacherServlet extends HttpServlet {
 	private static final String OPERATION_DISCONNECT = "disconnect";
 	private static final String OPERATION_SEND_LETTER = "letter";
 	private static final String OPERATION_WORD_UPDATED = "word_updated";
+	private static final String OPERATION_UPDATE_WORD = "update_word";
 	private static final String OPERATION_GOTO_PAGE = "goto_page";
 	
 	private static final String PAGE_INDEX = "index";
@@ -138,6 +139,14 @@ public class PageDispacherServlet extends HttpServlet {
 		} 
 	}
 	
+	private void updateWord(HttpServletRequest request, String userName, String word) {
+		GameDto game = gameClientEndpoint.updateWord(userName, word);
+		if (game!=null) {
+		  request.setAttribute(ATTR_NAME_GAME, game);
+		} 
+	}
+	
+	
 	private String doOperation(HttpServletRequest request, String operation, String data) {		
 	   System.out.println("HttpServlet::doOperation > "+operation+" > "+data);
 	   String username = request.getParameter("username");
@@ -152,13 +161,17 @@ public class PageDispacherServlet extends HttpServlet {
 	   } else if (OPERATION_SEND_LETTER.equals(operation)) {		   
 		   sendLetter(request, username, data);
 		   return currentPageJsp(request);
-	   } else if (OPERATION_WORD_UPDATED.equals(operation)) {
+	   } else if (OPERATION_UPDATE_WORD.equals(operation)) {
+		   updateWord(request, username, data);
 		   return currentPageJsp(request);
-	   }  else if (OPERATION_GOTO_PAGE.equals(operation)) {
+	   } else if (OPERATION_WORD_UPDATED.equals(operation)) {		   
+		   return currentPageJsp(request);
+	   } 
+	   else if (OPERATION_GOTO_PAGE.equals(operation)) {
 		   return pageJsp(data);
 	   } 
 	   return PROCESS_ERROR;
-	}		
+	} 		
 	
 //	private  String getErrorMessage() {
 //		return errorMessage;

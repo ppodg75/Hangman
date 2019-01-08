@@ -1,11 +1,16 @@
-.letter_blank {
-	border-bottom: 1px solid black;
-	margin-left: 10px;	
+.letter_blanked {
+	margin-left: 10px;
+	margin-right: 10px;		
+	border: 1px blue black;
+	borer-radius: 3px;
+	color: black;
+	background-color: white;
 	font-size: 16pt;
 }
 
 .letter_hit {
-	margin-left: 10px;	
+	margin-left: 10px;
+	margin-right: 10px;	
 	border: 1px blue black;
 	borer-radius: 3px;
 	color: yellow;

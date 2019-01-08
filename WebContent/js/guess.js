@@ -33,10 +33,29 @@ function wsOnOpen() {
 	sendHello()
 }
 
-function wsOnMessage(data) {
-	
+function wsOnMessage(data) {	
 	if (data == "word_updated") {
 		submit_operation("word_updated","")
 	}
-	
 }
+
+function getGappedWord(gappedWord) {
+	console.log("showGappedWord: "+gappedWord)
+	var t = ""
+	var c = ""
+	for (i = 0; i < gappedWord.length; i++) {
+		var c = gappedWord.charAt(i)
+		if (c == "_")  
+			{ t += "<span class='letter_blanked'>?</span>" }
+		else
+			{ t += "<span class='letter_hit'>" + c + "</span>"}
+	}
+	return t;
+
+}
+
+function printGappedWord(word) {	 
+	$("#word_lettered").html(getGappedWord(word))
+}
+
+if (gappedWord!=null)  { printGappedWord(gappedWord) }

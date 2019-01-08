@@ -2,21 +2,24 @@
 <%@ page import="dto.GameDto, dto.PlayerDto" %>
 
 <%@include file="includes/header.jsp" %>
-
+<script>
 <% 
   String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; 
   PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("player"):null;
   GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):null;
   String lettersUsed = "";
   String imgHangman = "szub0.jpg";
+  String gappedWord = "";
   boolean waitForWord = "WAIT_FOR_WORD".equals(game.getGameStatus());
   if (game!=null) {
 	  imgHangman = "szub"+game.getCountMissed()+".jpg";
 	  lettersUsed = (game.getUsedLetters()!=null)?game.getUsedLetters():"";
+	  if (!waitForWord) { gappedWord = game.getGappedWord(); }
   }
+  
+  out.println("var gappedWord='"+gappedWord+"'");
 %>
-<input type="hidden" id="username" name="username" value="<%= username %>" />
-
+</script>
 
 <input type="hidden" id="username" name="username" value="<%= username %>" />
 
@@ -41,6 +44,7 @@
 <div id="word">
   <div class="word_label">Word to guess:</div>
 	    <div id="word_lettered">
+          <!-- span class="letter_blank">?</span>
           <span class="letter_blank">?</span>
           <span class="letter_blank">?</span>
           <span class="letter_blank">?</span>
@@ -48,8 +52,7 @@
           <span class="letter_blank">?</span>
           <span class="letter_blank">?</span>
           <span class="letter_blank">?</span>
-          <span class="letter_blank">?</span>
-          <span class="letter_hit">T</span>
+          <span class="letter_hit">T</span -->
   		</div>
 </div>
 
