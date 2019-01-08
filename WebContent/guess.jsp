@@ -1,35 +1,63 @@
 <%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="dto.GameDto, dto.PlayerDto" %>
+
 <%@include file="includes/header.jsp" %>
 
-<script src="js/guess.js"></script>
+<% 
+  String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; 
+  PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("username"):null;
+  GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):null;
+  String lettersUsed = "";  
+  if (game!=null) {
+	  lettersUsed = game.getUsedLetters();
+  }
+%>
+<input type="hidden" id="username" name="username" value="<%= username %>" />
+
+
+<input type="hidden" id="username" name="username" value="<%= username %>" />
 
 <div id="userdata">
-    <div class="user_name">Ja</div>
+    <div class="user_name">Ja (<%= username %>)</div>
 	<div class="user_points">
-		<span class="label">points:</span> <span class="value">20</span>
+		<span class="label">points:</span> <span class="value"><%=  player.getPoints() %></span>
 	</div>
 	<div class="user_wins">
-		<span class="label">wins:</span> <span class="value">30</span>
+		<span class="label">wins:</span> <span class="value"><%=  player.getCountWins() %></span>
 	</div>
 	<div class="user_losts">
-		<span class="label">losts:</span> <span class="value">10</span>
+		<span class="label">losts:</span> <span class="value"><%=  player.getCountLosts() %></span>
 	</div>
 </div>
-<div id="pict_hangman"><img src="img/szub0.jpg" height="300px" /></div>
+<div id="pict_hangman"><img src="img/szub0.jpg" id="hangman" height="300px" /></div>
 
 <div id="word">
   <div class="word_label">Word to guess:</div>
-  <div id="word_lettered">
-     <span class="letter_blank">?</span>
-     <span class="letter_blank">?</span>
-     <span class="letter_blank">?</span>
-     <span class="letter_blank">?</span>
-     <span class="letter_blank">?</span>
-     <span class="letter_blank">?</span>
-     <span class="letter_blank">?</span>
-     <span class="letter_blank">?</span>
-     <span class="letter_hit">T</span>
-  </div>
+  <%
+    if (game==null) 
+  	 {
+  %>
+       <div id="staus_game" class="error"> unknown status game (game missed!). </div>
+  <% } else 
+ { if ( "WAIT_FOR_WORD".equals(game.getGameStatus()) ) { %> 
+	  
+	     <div id="word_wait"> Waiting for a word from opponent ... </div>
+	  <% } else { %>
+	    <div id="word_lettered">
+          <span class="letter_blank">?</span>
+          <span class="letter_blank">?</span>
+          <span class="letter_blank">?</span>
+          <span class="letter_blank">?</span>
+          <span class="letter_blank">?</span>
+          <span class="letter_blank">?</span>
+          <span class="letter_blank">?</span>
+          <span class="letter_blank">?</span>
+          <span class="letter_hit">T</span>
+  		</div>
+	  
+	  		<% }
+ } %>
+  
 </div>
 
 <%!
@@ -55,7 +83,7 @@ String line1 = new String("QWERTYUIOP");
 String line2 = new String("ASDFGHJKL");
 String line3 = new String("ZXCVBNM");
 String line4 = new String("ĄĆĘŁŃÓŚŻ");
-String lettersUsed = new String("UTDMĄ");
+
 %>
 <div style="text-align: center; margin-top: 30px;">CLICK ON A LETTER-BUTTON:</div>
 <div id="keyboard">
@@ -70,4 +98,6 @@ String lettersUsed = new String("UTDMĄ");
   <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Your opponent will get one point. Are you sure?</p>
 </div>
 <script>$( "#dialog-confirm" ).hide();</script>
+
+<script src="js/guess.js"></script>
 <%@include file="includes/footer.jsp" %>

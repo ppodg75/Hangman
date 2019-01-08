@@ -11,6 +11,8 @@ function onMessage(evt) {
 }
 
 function do_disconnect() {
+	sendByeBye()
+	submit_operation("disconnect", getUserName())
 }
 
 function buttonDisconnectClicked() {
@@ -35,23 +37,17 @@ function buttonDisconnectClicked() {
 
 function showUser(user) {
 	console.log("showUser: " + user);
-	$("#user").html("Ja ("+user.name+")");
-	$("#user_points").html("Ja ("+user.name+")");
-	$("#user_wins").html("Ja ("+user.name+")");
-	$("#user_losts").html("Ja ("+user.name+")");
+	$("#user").html("Me ("+user.name+")");
+	$("#user_points").html(+user.points);
+	$("#user_wins").html(user.countWins);
+	$("#user_losts").html(user.countLosts);
 }
+
+
 
 function refershPlayer(player) {
 	console.log("refershPlayer");
 	showUser(player)
-//	var urlGetPlayer = getEndpointUrl("players") + "/" + getUserName()			
-//	$.ajax({
-//		type : "GET",
-//		url : urlGetPlayer,
-//		success : function(data) {
-//			showUser(data)
-//		}
-//	})
 }
 
 function initProgress() {
@@ -80,21 +76,30 @@ function showList(l) {
 	$("#list").html(l)
 }
 
+function isInvisible(user) {
+	return user.status == 'INVISIBLE' 
+}
+
 function refreshList() {
 	console.log("refreshList");
 	$.ajax({
 		type : "GET",
 		url : getEndpointUrl("players"),
 		success : function(data) {
-			console.log(" data successed: " + data)
+			console.log("data successed: ") // + data)
 			var list = ""
 			var b = 0
 			var username = getUserName()
+			console.log("current user name: "+username) // + data)
+			
+			addComputerToList(b)
+			b = 1
+			
 			jQuery.each(data, function(index, itemData) {
-				if (itemData.name != username) {
+				if ((itemData.name != username) && !isInvisible(itemData)) {
 					if (index > 0) {
 						list += addToList(itemData, b)
-					}
+					} 
 					b = 1 - b
 				} else {
 					refershPlayer(itemData)
@@ -104,6 +109,7 @@ function refreshList() {
 		}
 	})
 }
+
 function timeToRefresh() {
 	console.log("timeToRefresh: " + timerCounter);
 	timerCounter--;
@@ -121,8 +127,56 @@ function timeout() {
 	}, 500);
 }
 
+timeout()
+
 function wsOnOpen() {
 	console.log("wsOnOpen")
 	sendHello()
 	refreshList()
 }
+
+function wsOnMessage(msg) {
+	console.log("wsOnMessage: "+msg)
+	if (msg == 'goto_guess') {
+		submit_operation("guess", "start")
+		return;
+	}
+	if (msg == 'goto_word') {
+		submit_operation("word", "start")
+		return;
+	}
+	if (msg == 'refresh_player_list') {
+		refreshList()
+		return;
+	}
+	
+}
+
+function playerAliveCanPlay(opponentName) {
+	var urlGetPlayer = getEndpointUrl("players") + "/" + opponentName //getUserName()			
+	$.ajax({
+			type : "GET",
+			url : urlGetPlayer,
+			success : function(data) {
+			    console.log("data = "+data)	
+			    var json = $.parseJSON(data);
+			    console.log("data.status = "+json.status)
+				if (json.status == 'CREATED') {
+					submit_operation("playGame", opponentName)
+				} else {
+					alert('User "'+opponentName+'" is busy or unaviable!')
+				}
+			},
+		    error: function (request, status, error) {
+		        alert(request.responseText);
+		      }
+		})
+}
+
+function playWith(opponentName) {	
+	if (confirm("You will be play with "+opponentName+"?")) {
+			playerAliveCanPlay(opponentName)
+	}
+}
+ 
+

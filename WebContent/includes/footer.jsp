@@ -2,5 +2,6 @@
 </form>
 </div> <!--  content block  -->
 <div id="footer">Copyright 2018, game by Piotr Podgórski and Norbert Matrzak</div>
+<script src="js/websocket.js"></script>
 </body>
 </html> 

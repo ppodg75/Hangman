@@ -49,4 +49,6 @@ function sendHello() {
 	SendOperationToServer("hello", getUserName())
 }
 
-
+function sendByeBye() {
+	SendOperationToServer("byebye", getUserName())
+}

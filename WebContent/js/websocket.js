@@ -7,20 +7,23 @@ var websocket = new WebSocket(wsUri);
 console.log("connected");
 
 websocket.onerror = function(evt) {
-	onError(evt)
+	console.log('websocket.onerror')
+	wsOnError(evt)
 };
 
-function onError(evt) {
-	console.log("ws: err");
+function wsOnError(evt) {
+	console.log("wsOnError="+evt.data);
 }
 
 websocket.onopen = function(evt) {
-	wsOnOpen(evt)
+	console.log('websocket.onopen')
+	wsOnOpen()
 };
 
 
 websocket.onmessage = function(evt) {
-	onMessage(evt)
+	console.log('websocket.onmessage')
+	wsOnMessage(evt.data)
 };
 
 //function onMessage(evt) {

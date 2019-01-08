@@ -4,7 +4,7 @@
 <input type="hidden" id="username" name="username" value="<%= username %>" />
         
 <div id="userdata">
-	<div class="user_name" id="user">Ja</div>
+	<div class="user_name" id="user">Me</div>
 	<div class="user_points">
 		<span class="label">points:</span> <span class="value" id="user_points">20</span>
 	</div>
@@ -25,8 +25,21 @@ function addToList(item, u) {
 	var t = "<div class='user"+u+"'><div class='user_name'>"+item.name+"</div>";
 	t += divClassValue("user_points", "points", item.points)
 	t += divClassValue("user_wins", "wins", item.countWins)
-	t += divClassValue("user_losts", "losts", item.countLosts)
-	t += "<div class='user_buttons'><button type='button'>Play</button></div>"
+	t += divClassValue("user_losts", "losts", item.countLosts) 
+	 
+	t += "<div class='user_buttons'><button type='button' form='main_form' onClick='playWith(\""+item.name+"\""
+	if (item.status=='PLAYING') t += " disabled"		
+	t += ")'>Play</button></div>"
+	t += "</div>";
+	return t;
+}
+
+function addComputerToList(item, u) {
+	var t = "<div class='user"+u+"'><div class='user_name'>COMPUTER</div>";
+	t += divClassValue("user_points", "points", 0)
+	t += divClassValue("user_wins", "wins", 0)
+	t += divClassValue("user_losts", "losts", 0)
+	t += "<div class='user_buttons'><button type='button' form='main_form' onClick='playWith(\"COMPUTER\")'>Play</button></div>"
 	t += "</div>";
 	return t;
 }

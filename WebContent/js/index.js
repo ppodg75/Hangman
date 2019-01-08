@@ -7,11 +7,11 @@ function hideMessage() {
 
 function showUserCreated() {
 	console.log("showUserCreated")
-	$("#message").removeClass("error").html("User created").show();
+	$("#message").removeClass("error").html("User created! Wait ...").show();
 	setTimeout(function() {
 		hideMessage();
 		submit_operation("setPlayerName", getUserName())
-	}, 2000);
+	}, 500);
 }
 
 function showError() {
@@ -41,19 +41,44 @@ function checkPlayerAndGo(name) {
 function buttonStartClicked() {
 	console.log("buttonStartClicked")
 	username = getUserName()
+	
 	if (username=="") {
 		alert("Enter player name!")
 		return false;
-	}	
+	}		
+	if (username=="COMPUTER") {
+		alert("Enter another player name!")
+		return false;
+	}
+	
 	checkPlayerAndGo(username)	
 	return true;
 }
 
-function onMessage(evt) {
-   console.log("ws: message: "+evt.data)
-}
-
-
 function wsOnOpen() {
 	console.log("wsOnOpen")
 }
+
+var input = document.getElementById("username");
+
+//Execute a function when the user releases a key on the keyboard
+input.addEventListener("keyup", function(event) {
+// Cancel the default action, if needed
+	
+event.preventDefault();
+
+// Number 13 is the "Enter" key on the keyboard
+if (event.keyCode === 13) {
+	buttonStartClicked()
+}
+});
+
+
+$(document).ready(function() {
+	  $(window).keydown(function(event){
+	    if(event.keyCode == 13) {
+	      event.preventDefault();
+	      return false;
+	    }
+	  });
+});
