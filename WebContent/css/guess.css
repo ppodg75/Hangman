@@ -46,3 +46,10 @@
     height: 23px;
     font-size: 10pt;	
 }
+
+#word_wait {
+	font-size: 16pt;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}

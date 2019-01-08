@@ -5,11 +5,14 @@
 
 <% 
   String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; 
-  PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("username"):null;
+  PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("player"):null;
   GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):null;
-  String lettersUsed = "";  
+  String lettersUsed = "";
+  String imgHangman = "szub0.jpg";
+  boolean waitForWord = "WAIT_FOR_WORD".equals(game.getGameStatus());
   if (game!=null) {
-	  lettersUsed = game.getUsedLetters();
+	  imgHangman = "szub"+game.getCountMissed()+".jpg";
+	  lettersUsed = (game.getUsedLetters()!=null)?game.getUsedLetters():"";
   }
 %>
 <input type="hidden" id="username" name="username" value="<%= username %>" />
@@ -29,20 +32,14 @@
 		<span class="label">losts:</span> <span class="value"><%=  player.getCountLosts() %></span>
 	</div>
 </div>
-<div id="pict_hangman"><img src="img/szub0.jpg" id="hangman" height="300px" /></div>
+<div id="pict_hangman"><img src="img/<%= imgHangman %>" id="hangman" height="300px" /></div>
+
+<% if (waitForWord) { %>
+<div id="word_wait"> Waiting for a word from the opponent ... </div>
+<% } %>
 
 <div id="word">
   <div class="word_label">Word to guess:</div>
-  <%
-    if (game==null) 
-  	 {
-  %>
-       <div id="staus_game" class="error"> unknown status game (game missed!). </div>
-  <% } else 
- { if ( "WAIT_FOR_WORD".equals(game.getGameStatus()) ) { %> 
-	  
-	     <div id="word_wait"> Waiting for a word from opponent ... </div>
-	  <% } else { %>
 	    <div id="word_lettered">
           <span class="letter_blank">?</span>
           <span class="letter_blank">?</span>
@@ -54,10 +51,6 @@
           <span class="letter_blank">?</span>
           <span class="letter_hit">T</span>
   		</div>
-	  
-	  		<% }
- } %>
-  
 </div>
 
 <%!
@@ -85,7 +78,7 @@ String line3 = new String("ZXCVBNM");
 String line4 = new String("ĄĆĘŁŃÓŚŻ");
 
 %>
-<div style="text-align: center; margin-top: 30px;">CLICK ON A LETTER-BUTTON:</div>
+<div id="keyboard_head" style="text-align: center; margin-top: 30px;">CLICK ON A LETTER-BUTTON:</div>
 <div id="keyboard">
    <% out.print(lineLetters(line1,lettersUsed));  %>
    <% out.print(lineLetters(line2,lettersUsed));  %>
@@ -97,7 +90,16 @@ String line4 = new String("ĄĆĘŁŃÓŚŻ");
 <div id="dialog-confirm" title="End of the game?">
   <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Your opponent will get one point. Are you sure?</p>
 </div>
-<script>$( "#dialog-confirm" ).hide();</script>
+<script>
+$( "#dialog-confirm" ).hide();
+
+<% if (waitForWord) { %>
+$( "#keyboard_head" ).hide();
+$( "#keyboard" ).hide();
+$( "#word" ).hide();
+<% } %>
+
+</script>
 
 <script src="js/guess.js"></script>
 <%@include file="includes/footer.jsp" %>

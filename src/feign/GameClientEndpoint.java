@@ -37,6 +37,7 @@ public class GameClientEndpoint implements IGameClientEndpoint {
 	}
 	
 	public GameDto sendLetter(String playerName, String letter) {
+		System.out.println("GameClientEndpoint::sendLetter "+playerName+" > "+letter);
 		WebTarget target = webTarget.path("sendLetter/"+playerName+"/"+letter);
 		String response = target.request()
 				.accept(MediaType.TEXT_PLAIN).get(String.class);
@@ -44,7 +45,22 @@ public class GameClientEndpoint implements IGameClientEndpoint {
 		
 		GameDto p = g.fromJson(response, GameDto.class);
 			
-		System.out.println("HangmanClientEndpoint::GameDto response = "+p.getUsedLetters());
+		System.out.println("HangmanClientEndpoint::GameDto response.usedletters = "+p.getUsedLetters());
+		
+		return p;
+	}
+	
+	public GameDto updateWord(String playerName, String word) {
+		System.out.println("GameClientEndpoint::updateWord "+playerName+" > "+word);
+		
+		WebTarget target = webTarget.path("updateWord/"+playerName+"/"+word);
+		String response = target.request()
+				.accept(MediaType.TEXT_PLAIN).get(String.class);
+		System.out.println("HangmanClientEndpoint::game/sendLetter response = "+response);
+		
+		GameDto p = g.fromJson(response, GameDto.class);
+			
+		System.out.println("HangmanClientEndpoint::GameDto response.word = "+p.getTheWord());
 		
 		return p;
 	}

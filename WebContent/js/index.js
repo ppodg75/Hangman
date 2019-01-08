@@ -59,20 +59,23 @@ function wsOnOpen() {
 	console.log("wsOnOpen")
 }
 
-var input = document.getElementById("username");
 
+function wsOnMessage(msg) {
+	console.log("wsOnMessage: "+msg)
+}
+
+$("#username").focus()
+
+var input = document.getElementById("username");
 //Execute a function when the user releases a key on the keyboard
 input.addEventListener("keyup", function(event) {
-// Cancel the default action, if needed
-	
-event.preventDefault();
-
-// Number 13 is the "Enter" key on the keyboard
-if (event.keyCode === 13) {
-	buttonStartClicked()
-}
+	// Cancel the default action, if needed		
+	event.preventDefault();	
+	// Number 13 is the "Enter" key on the keyboard
+	if (event.keyCode === 13) {
+		buttonStartClicked()
+	}
 });
-
 
 $(document).ready(function() {
 	  $(window).keydown(function(event){

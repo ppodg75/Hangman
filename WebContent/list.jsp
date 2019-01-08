@@ -27,14 +27,14 @@ function addToList(item, u) {
 	t += divClassValue("user_wins", "wins", item.countWins)
 	t += divClassValue("user_losts", "losts", item.countLosts) 
 	 
-	t += "<div class='user_buttons'><button type='button' form='main_form' onClick='playWith(\""+item.name+"\""
+	t += "<div class='user_buttons'><button type='button' form='main_form' onClick='playWith(\""+item.name+"\")' "
 	if (item.status=='PLAYING') t += " disabled"		
-	t += ")'>Play</button></div>"
+	t += ">Play</button></div>"
 	t += "</div>";
 	return t;
 }
 
-function addComputerToList(item, u) {
+function addComputerToList(u) {
 	var t = "<div class='user"+u+"'><div class='user_name'>COMPUTER</div>";
 	t += divClassValue("user_points", "points", 0)
 	t += divClassValue("user_wins", "wins", 0)

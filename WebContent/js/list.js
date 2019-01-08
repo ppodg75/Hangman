@@ -87,14 +87,14 @@ function refreshList() {
 		url : getEndpointUrl("players"),
 		success : function(data) {
 			console.log("data successed: ") // + data)
-			var list = ""
+			
 			var b = 0
+			var list = addComputerToList(b)
+			
 			var username = getUserName()
 			console.log("current user name: "+username) // + data)
 			
-			addComputerToList(b)
 			b = 1
-			
 			jQuery.each(data, function(index, itemData) {
 				if ((itemData.name != username) && !isInvisible(itemData)) {
 					if (index > 0) {
@@ -127,7 +127,7 @@ function timeout() {
 	}, 500);
 }
 
-timeout()
+//timeout()
 
 function wsOnOpen() {
 	console.log("wsOnOpen")
@@ -138,11 +138,11 @@ function wsOnOpen() {
 function wsOnMessage(msg) {
 	console.log("wsOnMessage: "+msg)
 	if (msg == 'goto_guess') {
-		submit_operation("guess", "start")
+		submit_operation("goto_page", "guess")
 		return;
 	}
 	if (msg == 'goto_word') {
-		submit_operation("word", "start")
+		submit_operation("goto_page", "word")
 		return;
 	}
 	if (msg == 'refresh_player_list') {

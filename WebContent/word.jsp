@@ -4,7 +4,7 @@
 
 <% 
   String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; 
-  PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("username"):new PlayerDto();
+  PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("player"):new PlayerDto();
   GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):new GameDto();
 %>
 <input type="hidden" id="username" name="username" value="<%= username %>" />

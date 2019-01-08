@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dto.GameDto;
+import dto.PlayerDto;
 import feign.IGameClientEndpoint;
 import feign.IPlayerClientEndpoint;
 
@@ -29,6 +30,7 @@ public class PageDispacherServlet extends HttpServlet {
 	private static final String OPERATION_DISCONNECT = "disconnect";
 	private static final String OPERATION_SEND_LETTER = "letter";
 	private static final String OPERATION_WORD_UPDATED = "word_updated";
+	private static final String OPERATION_GOTO_PAGE = "goto_page";
 	
 	private static final String PAGE_INDEX = "index";
 	private static final String PAGE_LIST = "list";
@@ -84,13 +86,16 @@ public class PageDispacherServlet extends HttpServlet {
 		request.setAttribute(ATTR_NAME_PLAYERNAME, username);
 		
         if (username != null) {            
-            ofNullable(playerClientEndpoint.getPlayer(username))
-              	.ifPresent(p -> { request.setAttribute("player", p); System.out.println("HttpServlet::updatePageAttributes > player set to attribute <<< "+p.getName()); });
-            
-            if (request.getAttribute("game")==null) { // this attribute could have been set in sendLetter operation
-	            ofNullable(gameClientEndpoint.getGame(username))
-	          	    .ifPresent(g -> { request.setAttribute("game", g); System.out.println("HttpServlet::updatePageAttributes > game set to attribute <<< ");});
-            }            
+        	PlayerDto pdto = playerClientEndpoint.getPlayer(username);
+        	if (pdto!=null ) { 
+        		System.out.println("updatePageAttributes:pdto = "+pdto);
+        		request.setAttribute("player", pdto);
+        	}
+        	GameDto gdto = gameClientEndpoint.getGame(username);
+        	if (gdto!=null ) {
+        		System.out.println("updatePageAttributes:gamedto = "+gdto);
+        		request.setAttribute("game", gdto);
+        	}        
         }
 	}
 	
@@ -134,7 +139,7 @@ public class PageDispacherServlet extends HttpServlet {
 	}
 	
 	private String doOperation(HttpServletRequest request, String operation, String data) {		
-	   System.out.println("HttpServlet::doOperation > "+operation);
+	   System.out.println("HttpServlet::doOperation > "+operation+" > "+data);
 	   String username = request.getParameter("username");
 	   
 	   if (OPERATION_SET_PLAYER_NAME.equals(operation)) {		   
@@ -149,6 +154,8 @@ public class PageDispacherServlet extends HttpServlet {
 		   return currentPageJsp(request);
 	   } else if (OPERATION_WORD_UPDATED.equals(operation)) {
 		   return currentPageJsp(request);
+	   }  else if (OPERATION_GOTO_PAGE.equals(operation)) {
+		   return pageJsp(data);
 	   } 
 	   return PROCESS_ERROR;
 	}		
