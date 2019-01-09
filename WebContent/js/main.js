@@ -13,10 +13,10 @@ function submit_operation(operation, data) {
 	return true;	
 }
 
-//function gotoNextPage() {
-//	console.log("gotoNextPage")
-//	submit_operation("goto_page",$("nextPage").val())
-//}
+function goto_page(page) {
+	console.log("goto_page: "+page)
+	submit_operation("goto_page",page)
+}
 
 function updateCurrentPage(currentPage) {
 	console.log("updateCurrentPage")

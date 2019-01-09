@@ -6,18 +6,32 @@ function wsOnOpen() {
 }
 
 function updateGame(game) {
-	console.log("updateGame")
+	console.log("updateGame")	
+	printTheWord(game.theWord,game.usedLetters)
+	printUsedLetters(game.usedLetters)
+	if (game.gameStatus=="END") {
+		if (game.winner== getUserName()) {
+			$("#winBox").show();			
+		} else {
+			
+			$("#lostBox").show();
+		}
+		setTimeout(function() {
+			   goto_page("list")
+			}, 5000);
+	}
 }
 
 function updateWordAndGameState() {
 	console.log("updateWordAndGameState")
 	var username = getUserName()
-	ep = getEndpointUrl("game") + "/" + username, $.ajax({
+	ep = getEndpointUrl("game") + "/gameByPlayerName/" + username, $.ajax({
 		type : "GET",
 		url : ep,
 		success : function(data) {
 			console.log("data successed: " + data)
-			updateGame(data[0])
+			obj = jQuery.parseJSON( data );			
+			updateGame(obj)
 		}
 	})
 }
@@ -33,9 +47,17 @@ function wordEntered() {
 	var word = $("#word_input").val()
 	if (word == "" || word.length < 4) {
 		alert("A word cann`t be empty and has to have minimum 4 letters!")
-		return;
+		return false;
 	}
-	submit_operation("update_word", word)
+	//var letters = /^[A-Za-zĄĆĘŁŃÓŚŻŹ]+$/;
+	var letters = /^[A-Za-z]+$/;
+	if (!word.match(letters)) {
+		alert("You can use only letters A-Z!")
+		return false;
+	}
+	var conv = codePolishWordToWordWithSpecs(word)
+	console.log("encWord: "+word + " > "+conv);
+	submit_operation("update_word", conv)
 	return true;
 }
 
@@ -58,6 +80,17 @@ function getTheWord(theWord, used) {
 function printTheWord(theWord, used) {	 
 	$("#word_lettered").html(getTheWord(theWord, used))
 }
+
+function printUsedLetters(letters) {
+	var t = ""
+	for (i = 0; i < letters.length; i++) {
+	  var c = letters.charAt(i)
+	  t += "<span class='letter'>" + c + "</span>"
+	}
+	console.log("printUsedLetters="+t)
+	$("#letters").html(t)
+}
+
 
 $("#word").focus()
 

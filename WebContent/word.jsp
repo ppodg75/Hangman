@@ -1,14 +1,14 @@
 <%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="dto.GameDto, dto.PlayerDto" %>
 <%@include file="includes/header.jsp" %>
-
+<script src="js/utils.js"></script>
 <script>
 <% 
   String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; 
   PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("player"):new PlayerDto();
   GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):new GameDto();
   boolean waitForWord = "WAIT_FOR_WORD".equals(game.getGameStatus());
-  out.println("var waitForWord="+waitForWord);
+  out.println("var waitForWord="+waitForWord); 
   String lettersUsed = "";
   String theWord = "";
   if (game!=null) {
@@ -46,11 +46,29 @@
   <div id="word_lettered"> </div>
 </div>
 
+<div id="used_letters">
+  <div class="word_label">Letters used by opponent:</div>
+  <div id="letters"> </div>
+</div>
+
+<div id="winBox"> You won. Congratulations! </div>
+<div id="lostBox"> You lost!</div>		
+
+
+
 <script>
+$("#winBox").hide();
+$("#lostBox").hide();
+
 if (waitForWord) {
   $("#word").hide();
 }
+
+
+
+
 </script>
+
 
 <script src="js/word.js"></script>
 <%@include file="includes/footer.jsp" %>
