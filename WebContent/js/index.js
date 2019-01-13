@@ -10,7 +10,8 @@ function showUserCreated() {
 	$("#message").removeClass("error").html("User created! Wait ...").show();
 	setTimeout(function() {
 		hideMessage();
-		submit_operation("setPlayerName", getUserName())
+//		alert(getUserNameConverted())		
+		submit_operation("setPlayerName", getUserNameConverted())
 	}, 500);
 }
 

@@ -1,37 +1,40 @@
 <%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="dto.GameDto, dto.PlayerDto, utils.WordCodeDecode" %>
 <%@include file="includes/header.jsp" %>
-<script src="js/utils.js"></script>
+
 <script>
 <% 
-  String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; 
-  PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("player"):null;
-  GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):null;
+  PlayerDto player = request.getAttribute("player")!=null?(PlayerDto)request.getAttribute("player"):null;
+  GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):new GameDto();
   String lettersUsed = "";
   String imgHangman = "szub0.jpg";
   String gappedWord = "";
+  int letterIdCnt = 1;
   
   boolean waitForWord = "WAIT_FOR_WORD".equals(game.getGameStatus());
   boolean endGame = "END".equals(game.getGameStatus());
   boolean winGame = false;
   if (endGame) {
-	  winGame = game.getWinner().equals(username);
+	  winGame = game.getWinner().equals(player.getName());
   }
   if (game!=null) {
 	  imgHangman = "szub"+game.getCountMissed()+".jpg";
-	  lettersUsed = (game.getUsedLetters()!=null)?game.getUsedLetters():"";
+	  System.out.println("GUESS.JSP: getUsedLetters="+game.getUsedLetters());
+	  lettersUsed = WordCodeDecode.decodeWordWithSpecsToPolishWord((game.getUsedLetters()!=null)?game.getUsedLetters():"");
 	  out.println("var lettersUsed='"+lettersUsed+"'");
-	  if (!waitForWord) { gappedWord = game.getGappedWord(); }
+	  System.out.println("GUESS.JSP: getGappedWord="+game.getGappedWord());
+	  if (!waitForWord) { gappedWord = WordCodeDecode.decodeWordWithSpecsToPolishWord(game.getGappedWord()); }
   }
   
   out.println("var gappedWord='"+gappedWord+"'");
 %>
 </script>
 
-<input type="hidden" id="username" name="username" value="<%= username %>" />
+<input type="hidden" id="username" name="username" value="<%=player.getName()%>" />
+<input type="hidden" id="playerId" name="playerId" value="<%=player.getPlayerId() %>" />
 
 <div id="userdata">
-    <div class="user_name">Ja (<%= username %>)</div>
+    <div class="user_name">Ja (<%= player.getName() %>)</div>
 	<div class="user_points">
 		<span class="label">points:</span> <span class="value"><%=  player.getPoints() %></span>
 	</div>
@@ -54,13 +57,13 @@
 </div>
 
 <%!
- String printLineLetters(String letters, String used) {
+ String printLineLetters(String letters, String used, int row) {
 	StringBuilder sb = new StringBuilder();
 	sb.append("<div class=\"line\">");
 	for(int i=0; i<letters.length(); i++) {
-		String c =  letters.substring(i,i+1);
-		// id=\"letter"+c+"\"
-		sb.append("<button type=\"button\" onClick=\"guess_letter('"+WordCodeDecode.codePolishWordToWordWithSpecs(c)+"', this);\"");
+		String c =  letters.substring(i,i+1);		
+		String id="letterId_"+(100*row)+i;
+		sb.append("<button id='"+id+"' type=\"button\" onClick=\"guess_letter('"+WordCodeDecode.codePolishWordToWordWithSpecs(c)+"', '"+id+"');\"");
 		if (used.contains(c)) {
 			sb.append(" disabled title=\"a letter has been already used.\" ");
 		}
@@ -74,15 +77,15 @@
 %>
 <%
 String lines[] = { new String("QWERTYUIOP"), new String("ASDFGHJKL"), new String("ZXCVBNM")
- //                 , new String("ĄĆĘŁŃÓŚŻŹ")
+                 , new String("ĄĆĘŁŃÓŚŻŹ")
 					};
 %>
 <div id="keyboard_head" style="text-align: center; margin-top: 30px;">CLICK ON A LETTER-BUTTON:</div>
 <div id="keyboard">   
-
-  <%
-    for(int i=0; i < lines.length; i++) { out.print(printLineLetters(lines[i],lettersUsed)); } 
-    %>   
+<%
+    for(int i=0; i < lines.length; i++) { out.print(printLineLetters(lines[i],lettersUsed,i)); } 
+%>
+   
 </div>
 <% 
 if (endGame) {

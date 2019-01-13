@@ -1,28 +1,28 @@
 <%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="dto.GameDto, dto.PlayerDto" %>
+<%@ page import="dto.GameDto, dto.PlayerDto, utils.WordCodeDecode" %>
 <%@include file="includes/header.jsp" %>
-<script src="js/utils.js"></script>
+
 <script>
 <% 
-  String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; 
-  PlayerDto player = (request.getAttribute("player")!=null)?(PlayerDto)request.getAttribute("player"):new PlayerDto();
+  PlayerDto player = request.getAttribute("player")!=null?(PlayerDto)request.getAttribute("player"):null;
   GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):new GameDto();
   boolean waitForWord = "WAIT_FOR_WORD".equals(game.getGameStatus());
   out.println("var waitForWord="+waitForWord); 
   String lettersUsed = "";
   String theWord = "";
   if (game!=null) {
-	  theWord = (game.getTheWord()!=null)?game.getTheWord():"";
+	  theWord = WordCodeDecode.decodeWordWithSpecsToPolishWord((game.getTheWord()!=null)?game.getTheWord():"");
 	  out.println("var theWord='"+theWord+"'");
-	  lettersUsed = (game.getUsedLetters()!=null)?game.getUsedLetters():"";
+	  lettersUsed = WordCodeDecode.decodeWordWithSpecsToPolishWord((game.getUsedLetters()!=null)?game.getUsedLetters():"");
 	  out.println("var lettersUsed='"+lettersUsed+"'");
   }
 %>
 </script>
-<input type="hidden" id="username" name="username" value="<%= username %>" />
+<input type="hidden" id="username" name="username" value="<%=player.getName()%>" />
+<input type="hidden" id="playerId" name="playerId" value="<%=player.getPlayerId() %>" />
 
 <div id="userdata">
-    <div class="user_name">Ja (<%= username %>)</div>
+    <div class="user_name">Ja (<%= player.getName() %>)</div>
 	<div class="user_points">
 		<span class="label">points:</span> <span class="value"><%=  player.getPoints() %></span>
 	</div>
@@ -53,22 +53,25 @@
 
 <div id="winBox"> You won. Congratulations! </div>
 <div id="lostBox"> You lost!</div>		
+<div id="opponent_end_game"> Opponent finished game !</div>
 
 
+<div style="text-align: center; margin-top: 30px;"><button type="button" onClick="guess_end_game()">END GAME</button> </div>
+
+<div id="dialog-confirm" title="End of the game?">
+  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Your opponent will get all points. Are you sure?</p>
+</div>
 
 <script>
+$("#dialog-confirm").hide();
 $("#winBox").hide();
 $("#lostBox").hide();
+$("#opponent_end_game").hide();
 
 if (waitForWord) {
   $("#word").hide();
 }
-
-
-
-
 </script>
-
 
 <script src="js/word.js"></script>
 <%@include file="includes/footer.jsp" %>

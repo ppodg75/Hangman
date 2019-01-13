@@ -6,13 +6,13 @@ $("#dialog-disconnect").hide();
 var timerCounterFrom = 20;
 var timerCounter = timerCounterFrom;
 
-function onMessage(evt) {
-	console.log("ws: message: " + evt.data)
-}
+//function onMessage(evt) {
+//	console.log("ws: message: " + evt.data)
+//}
 
 function do_disconnect() {
 	sendByeBye()
-	submit_operation("disconnect", getUserName())
+	submit_operation("disconnect", getPlayerId())
 }
 
 function buttonDisconnectClicked() {
@@ -37,13 +37,12 @@ function buttonDisconnectClicked() {
 
 function showUser(user) {
 	console.log("showUser: " + user);
-	$("#user").html("Me ("+user.name+")");
-	$("#user_points").html(+user.points);
+	var un = user.name
+	$("#user").html("Me (" + un.toUpperCase() + ")");
+	$("#user_points").html(user.points);
 	$("#user_wins").html(user.countWins);
 	$("#user_losts").html(user.countLosts);
 }
-
-
 
 function refershPlayer(player) {
 	console.log("refershPlayer");
@@ -77,7 +76,7 @@ function showList(l) {
 }
 
 function isInvisible(user) {
-	return user.status == 'INVISIBLE' 
+	return user.status == 'INVISIBLE'
 }
 
 function refreshList() {
@@ -87,19 +86,20 @@ function refreshList() {
 		url : getEndpointUrl("players"),
 		success : function(data) {
 			console.log("data successed: ") // + data)
-			
+
 			var b = 0
 			var list = addComputerToList(b)
-			
+
 			var username = getUserName()
-			console.log("current user name: "+username) // + data)
-			
+			var playerId = getPlayerId()
+			console.log("current user name: " + username + " with id: "+playerId) // + data)
+
 			b = 1
 			jQuery.each(data, function(index, itemData) {
-				if ((itemData.name != username) && !isInvisible(itemData)) {
+				if ((itemData.playerId != playerId) && !isInvisible(itemData)) {
 					if (index > 0) {
 						list += addToList(itemData, b)
-					} 
+					}
 					b = 1 - b
 				} else {
 					refershPlayer(itemData)
@@ -127,8 +127,9 @@ function timeout() {
 	}, 500);
 }
 
-//timeout()
+// timeout()
 
+/* messages from websocket */
 function wsOnOpen() {
 	console.log("wsOnOpen")
 	sendHello()
@@ -136,7 +137,7 @@ function wsOnOpen() {
 }
 
 function wsOnMessage(msg) {
-	console.log("wsOnMessage: "+msg)
+	console.log("wsOnMessage: " + msg)
 	if (msg == 'goto_guess') {
 		submit_operation("goto_page", "guess")
 		return;
@@ -148,35 +149,36 @@ function wsOnMessage(msg) {
 	if (msg == 'refresh_player_list') {
 		refreshList()
 		return;
-	}
-	
+	}	
 }
 
-function playerAliveCanPlay(opponentName) {
-	var urlGetPlayer = getEndpointUrl("players") + "/" + opponentName //getUserName()			
+function playerAliveCanPlay(opponentId) {
+	var urlGetPlayer = getEndpointUrl("players") + "/byId/" + opponentId // getUserName()
 	$.ajax({
-			type : "GET",
-			url : urlGetPlayer,
-			success : function(data) {
-			    console.log("data = "+data)	
-			    var json = $.parseJSON(data);
-			    console.log("data.status = "+json.status)
-				if (json.status == 'CREATED') {
-					submit_operation("playGame", opponentName)
-				} else {
-					alert('User "'+opponentName+'" is busy or unaviable!')
-				}
-			},
-		    error: function (request, status, error) {
-		        alert(request.responseText);
-		      }
-		})
+		type : "GET",
+		url : urlGetPlayer,
+		success : function(data) {
+			console.log("data = " + data)
+			var json = $.parseJSON(data);
+			console.log("data.status = " + json.status)
+			if (json.status == 'CREATED') {
+				submit_operation("playGame", opponentId)
+			} else {
+				alert('Opponent is busy or unaviable!')
+			}
+		},
+		error : function(request, status, error) {
+			alert(request.responseText);
+		}
+	})
 }
 
-function playWith(opponentName) {	
-	if (confirm("You will be play with "+opponentName+"?")) {
-			playerAliveCanPlay(opponentName)
+function playWith(opponentId) {	
+	if (opponentId == 0) {
+		submit_operation("playGame", 0)
+	} else {
+		if (confirm("You will be play with " + opponentId + "?")) {
+			playerAliveCanPlay(opponentId)
+		}
 	}
 }
- 
-

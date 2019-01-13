@@ -15,16 +15,13 @@ import dto.GameDto;
 import dto.PlayerDto;
 import feign.IGameClientEndpoint;
 import feign.IPlayerClientEndpoint;
+import utils.WordCodeDecode;
 
+public class PageDispacherServlet extends HttpServlet {
 
-public class PageDispacherServlet extends HttpServlet {	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	
-	
-	public static final String PROCESS_ERROR = "ERROR";
+
+
 	private static final String OPERATION_SET_PLAYER_NAME = "setPlayerName";
 	private static final String OPERATION_START_GAME = "playGame";
 	private static final String OPERATION_DISCONNECT = "disconnect";
@@ -32,21 +29,21 @@ public class PageDispacherServlet extends HttpServlet {
 	private static final String OPERATION_WORD_UPDATED = "word_updated";
 	private static final String OPERATION_UPDATE_WORD = "update_word";
 	private static final String OPERATION_GOTO_PAGE = "goto_page";
-	
+	private static final String OPERATION_END_GAME = "end_game";
+
 	private static final String PAGE_INDEX = "index";
 	private static final String PAGE_LIST = "list";
 	private static final String PAGE_WORD = "word";
 	private static final String PAGE_GUESS = "guess";
-	
-	private String errorMessage;
-	
-	private static final String ATTR_NAME_ERROR = "errormsg";
+
+
 	private static final String ATTR_NAME_PLAYERNAME = "username";
+	private static final String ATTR_NAME_PLAYER = "player";
 	private static final String ATTR_NAME_GAME = "game";
-	
+
 	@Inject
 	private IPlayerClientEndpoint playerClientEndpoint;
-	
+
 	@Inject
 	private IGameClientEndpoint gameClientEndpoint;
 
@@ -54,133 +51,139 @@ public class PageDispacherServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		System.out.println("HttpServlet::doPost");
-		
-		String oper = request.getParameter("operation");
-		String data = request.getParameter("data");
-		
-//		String un = request.getParameter("username");
-//		System.out.println(String.format("operation: %s, data: %s, username: %s",oper,data,un));
-		
-		setErrorMessage(request, "");
-		
-		String operationResponse = processOperationAndIfOkReturnNextPage(request, oper, data);
-		
-		System.out.println("HttpServlet::operationResponse = "+operationResponse);
-		
-		if (!oper.equals(pageJsp(PAGE_INDEX))) { 
-    		 updatePageAttributes(request);
+
+		String operation = request.getParameter("operation");
+		String data = decode(request.getParameter("data"));
+		String username = request.getParameter("username");
+				
+		String nextPage = currentPageJsp(request);		
+		boolean setGameAttr = true;
+		boolean setPlayerAttr = true;
+		long playerId = getPlayerId(request);
+		System.out.println(String.format("operation: %s, data: %s, username: %s", operation, data, username));
+
+		if (OPERATION_SET_PLAYER_NAME.equals(operation)) {
+			username = decode(data);
+			System.out.println("HttpServlet::doPost > OPERATION_SET_PLAYER_NAME: "+ username);
+			request.setAttribute(ATTR_NAME_PLAYERNAME, username);
+			playerId = getPlayerId(request, username);
+			setPlayerAttr = false;
+			nextPage = pageJsp(PAGE_LIST);
+		} else {
+			request.setAttribute(ATTR_NAME_PLAYERNAME, getUserName(request));					
+			if (OPERATION_DISCONNECT.equals(operation)) {
+				request.setAttribute(ATTR_NAME_PLAYERNAME, null);
+				nextPage = pageJsp(PAGE_INDEX);
+			} else if (OPERATION_START_GAME.equals(operation)) {
+				nextPage = pageJsp(getPlayerPage(playerId, Long.valueOf(data)));
+			} else if (OPERATION_SEND_LETTER.equals(operation)) {
+				sendLetter(request, playerId, data);
+				setGameAttr = false;
+			} else if (OPERATION_UPDATE_WORD.equals(operation)) {
+				updateWord(request, playerId, data);
+				setGameAttr = false;
+			} else if (OPERATION_GOTO_PAGE.equals(operation)) {
+				nextPage = pageJsp(data);
+			} else if (OPERATION_GOTO_PAGE.equals(operation)) {
+				endGame(playerId);
+				nextPage = pageJsp(PAGE_LIST);
+			}				
 		}
 		
-		if (PROCESS_ERROR.equals(operationResponse)) {
-			setErrorMessage(request, errorMessage);
-			forwardToPage(currentPageJsp(request), request, response);
-		}
-		else {
-		    forwardToPage(operationResponse, request, response);
+		if (playerId != -1) {			
+			if (setPlayerAttr) { setPlayerAttribute(request, playerId); }
+			if (setGameAttr) { setGameAttribute(request, playerId); }
 		}
 
+		forwardToPage(nextPage, request, response);
+	}
+
+	private String decode(String data) {
+		if (data != null && !data.isEmpty()) {
+			return WordCodeDecode.decode(WordCodeDecode.decodeWordWithSpecsToPolishWord(data));
+		}
+		return "";
+	}
+
+	private long getPlayerId(HttpServletRequest request) {
+		return (request.getParameter("playerId") != null) ? Long.valueOf(request.getParameter("playerId")) : -1;
 	}
 	
-	private void updatePageAttributes(HttpServletRequest request) {
-		System.out.println("HttpServlet::updatePageAttributes");
-		String username = request.getParameter("username");
-		request.setAttribute(ATTR_NAME_PLAYERNAME, username);
-		
-        if (username != null) {            
-        	PlayerDto pdto = playerClientEndpoint.getPlayer(username);
-        	if (pdto!=null ) { 
-        		System.out.println("updatePageAttributes:pdto = "+pdto);
-        		request.setAttribute("player", pdto);
-        	}
-        	GameDto gdto = gameClientEndpoint.getGame(username);
-        	if (gdto!=null ) {
-        		System.out.println("updatePageAttributes:gamedto = "+gdto);
-        		request.setAttribute("game", gdto);
-        	}        
-        }
+	private long getPlayerId(HttpServletRequest request, String username) {
+		PlayerDto pdto = playerClientEndpoint.getPlayerByName(username);
+		if (pdto!=null) {
+			request.setAttribute(ATTR_NAME_PLAYER, pdto);
+		    return pdto.getPlayerId();
+		} else return -1;
+	}
+
+	private String getUserName(HttpServletRequest request) {
+		return decode(request.getParameter("username"));
 	}
 	
-	private void setErrorMessage(HttpServletRequest request, String message) {		
-		request.setAttribute(ATTR_NAME_ERROR, message);
+	private void setPlayerAttribute(HttpServletRequest request, long playerId) {
+		System.out.println("HttpServlet::setPlayerAttribute");
+		PlayerDto pdto = playerClientEndpoint.getPlayerById(playerId);		
+		if (pdto != null) {
+			System.out.println("setPlayerAttribute:PlayerDto = " + pdto);
+			request.setAttribute(ATTR_NAME_PLAYER, pdto);
+		}
 	}
 	
-	private void forwardToPage(String pageNameJsp, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void setGameAttribute(HttpServletRequest request, long playerId) {
+		System.out.println("HttpServlet::setGameAttribute");
+		GameDto gdto = gameClientEndpoint.getGame(playerId);
+		if (gdto != null) {
+			System.out.println("setGameAttribute:GameDto = " + gdto);
+			request.setAttribute(ATTR_NAME_GAME, gdto);
+		}
+	}
+	
+	private void forwardToPage(String pageNameJsp, HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		System.out.println("HttpServlet::forwardToPage > "+pageNameJsp);
 		RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageNameJsp);
 		requestDispatcher.forward(request, response);
 	}
-	
-	private String processOperationAndIfOkReturnNextPage(HttpServletRequest request, String operation, String data) {
-		System.out.println("HttpServlet::processOperationAndIfOkReturnNextPage > "+operation);
-		if (operation.isEmpty()) {
-			errorMessage = "Application error: empty or unknown operation: "+operation;
-			return PROCESS_ERROR;
-		}		
-		return  doOperation(request, operation, data);
+
+	private boolean sendToServerPlayGameReturnIfGuess(long playerId, long opponentId) {
+		System.out.println("HttpServlet::sendToServerPlayGameReturnIfGuess > " + playerId + " vs " + opponentId);
+		return gameClientEndpoint.createGameReturnTrueIfGuess(playerId, opponentId);
 	}
-	
-	private boolean sendToServerPlayGameReturnIfGuess(String playerName, String opponentName) {
-		 System.out.println("HttpServlet::sendToServerPlayGameReturnIfGuess > "+playerName+" vs "+opponentName);
-	 	 return gameClientEndpoint.createGameReturnTrueIfGuess(playerName, opponentName);
+
+	private String getPlayerPage(long playerId, long opponentId) {
+		if (sendToServerPlayGameReturnIfGuess(playerId, opponentId)) {
+			return PAGE_GUESS;
+		} else {
+			return PAGE_WORD;
+		}
 	}
+
+	private void sendLetter(HttpServletRequest request, long playerId, String letter) {
+		System.out.println("HttpServlet::sendLetter > " + playerId + " > " + letter);
+		GameDto game = gameClientEndpoint.sendLetter(playerId, letter);
+		if (game != null) {
+			request.setAttribute(ATTR_NAME_GAME, game);
+		}
+	} 
 	
-	
-	private String getPlayerPage(String playerName, String opponentName) {
-         if (sendToServerPlayGameReturnIfGuess(playerName, opponentName)) {
-           return PAGE_GUESS;
-         } else { 
-        	 return PAGE_WORD;
-         }
+	private void endGame(long playerId) {
+		System.out.println("HttpServlet::endGame");
+		gameClientEndpoint.endGame(playerId);
+	} 
+
+	private void updateWord(HttpServletRequest request, long playerId, String word) {
+		System.out.println("HttpServlet::sendLetter > " + playerId + " > " + word);
+		GameDto game = gameClientEndpoint.updateWord(playerId, word);
+		if (game != null) {
+			request.setAttribute(ATTR_NAME_GAME, game);
+		}
 	}
-	
-	private void sendLetter(HttpServletRequest request, String userName, String letter) {
-		GameDto game = gameClientEndpoint.sendLetter(userName, letter);
-		if (game!=null) {
-		  request.setAttribute(ATTR_NAME_GAME, game);
-		} 
-	}
-	
-	private void updateWord(HttpServletRequest request, String userName, String word) {
-		GameDto game = gameClientEndpoint.updateWord(userName, word);
-		if (game!=null) {
-		  request.setAttribute(ATTR_NAME_GAME, game);
-		} 
-	}
-	
-	
-	private String doOperation(HttpServletRequest request, String operation, String data) {		
-	   System.out.println("HttpServlet::doOperation > "+operation+" > "+data);
-	   String username = request.getParameter("username");
-	   
-	   if (OPERATION_SET_PLAYER_NAME.equals(operation)) {		   
-		   return pageJsp(PAGE_LIST);
-	   } else if (OPERATION_DISCONNECT.equals(operation)) {
-		   request.setAttribute(ATTR_NAME_PLAYERNAME, null);
-		   return pageJsp(PAGE_INDEX);
-	   } else if (OPERATION_START_GAME.equals(operation)) {
-		   return pageJsp(getPlayerPage(username, data));
-	   } else if (OPERATION_SEND_LETTER.equals(operation)) {		   
-		   sendLetter(request, username, data);
-		   return currentPageJsp(request);
-	   } else if (OPERATION_UPDATE_WORD.equals(operation)) {
-		   updateWord(request, username, data);
-		   return currentPageJsp(request);
-	   } else if (OPERATION_WORD_UPDATED.equals(operation)) {		   
-		   return currentPageJsp(request);
-	   } 
-	   else if (OPERATION_GOTO_PAGE.equals(operation)) {
-		   return pageJsp(data);
-	   } 
-	   return PROCESS_ERROR;
-	} 		
-	
-//	private  String getErrorMessage() {
-//		return errorMessage;
-//	}
 
 	private String pageJsp(String pageName) {
 		return pageName.concat(".jsp");
-	}	
-	
+	}
+
 	private String currentPageJsp(HttpServletRequest request) {
 		return pageJsp(ofNullable(request.getParameter("currentPage")).orElse(""));
 	}

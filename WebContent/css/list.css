@@ -21,6 +21,15 @@
 	width: 25%;
 }
 
+.computer_name {
+	float: left;
+	margin-left: 10px;
+	height: 25px;
+	font-weight: bold;
+	color: green;
+	width: 25%;
+}
+
 .user_points {
 	float: left;
 	margin-left: 40px;

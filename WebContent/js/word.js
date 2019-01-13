@@ -1,5 +1,28 @@
 updateCurrentPage("word")
 
+function do_guess_end_game() {
+	console.log("end_game");
+	submit_operation("end_game", letter);
+}
+
+function guess_end_game() {
+$( "#dialog-confirm" ).dialog({
+      resizable: false,
+      height: "auto",
+      width: 400,
+      modal: true,
+      buttons: {
+        "YES": function() {
+          $( this ).dialog( "close" );
+          do_guess_end_game();
+        },
+        No: function() {
+          $( this ).dialog("close");
+        }
+      }
+    });
+}
+
 function wsOnOpen() {
 	console.log("wsOnOpen")
 	sendHello()
@@ -24,8 +47,8 @@ function updateGame(game) {
 
 function updateWordAndGameState() {
 	console.log("updateWordAndGameState")
-	var username = getUserName()
-	ep = getEndpointUrl("game") + "/gameByPlayerName/" + username, $.ajax({
+	var id = getPlayerId()
+	ep = getEndpointUrl("game") + "/gameByPlayerId/" + id, $.ajax({
 		type : "GET",
 		url : ep,
 		success : function(data) {
@@ -40,6 +63,12 @@ function wsOnMessage(msg) {
 	console.log("wsOnMessage: " + msg)
 	if (msg == "letter") {
 		updateWordAndGameState()
+	} else 
+	if (msg == "opponnent_end_game") {
+		$("#opponent_end_game").show();
+		setTimeout(function() {
+			   goto_page("list")
+			}, 5000);
 	}
 }
 
@@ -49,8 +78,7 @@ function wordEntered() {
 		alert("A word cann`t be empty and has to have minimum 4 letters!")
 		return false;
 	}
-	//var letters = /^[A-Za-zĄĆĘŁŃÓŚŻŹ]+$/;
-	var letters = /^[A-Za-z]+$/;
+	var letters = /^[A-Za-zĄĆĘŁŃÓŚŻŹ]+$/;
 	if (!word.match(letters)) {
 		alert("You can use only letters A-Z!")
 		return false;
@@ -78,13 +106,16 @@ function getTheWord(theWord, used) {
 }
 
 function printTheWord(theWord, used) {	 
-	$("#word_lettered").html(getTheWord(theWord, used))
+	var _theWord = decodeWordWithSpecsToPolishWord(theWord)
+	var _used = decodeWordWithSpecsToPolishWord(used)
+	$("#word_lettered").html(getTheWord(_theWord, _used))
 }
 
 function printUsedLetters(letters) {
+	var _letters = decodeWordWithSpecsToPolishWord(letters)	
 	var t = ""
-	for (i = 0; i < letters.length; i++) {
-	  var c = letters.charAt(i)
+	for (i = 0; i < _letters.length; i++) {
+	  var c = _letters.charAt(i)
 	  t += "<span class='letter'>" + c + "</span>"
 	}
 	console.log("printUsedLetters="+t)

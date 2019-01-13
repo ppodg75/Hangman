@@ -23,7 +23,7 @@ public class PlayerClientEndpoint implements IPlayerClientEndpoint {
 	public PlayerClientEndpoint() {
 		System.out.println("PlayerClientEndpoint created");
 	}
-	
+	 
 //	public boolean createGameReturnTrueIfGuess(String playerName, String opponentName) {
 //		
 //		System.out.println("HangmanClientEndpoint::createGameReturnTrueIfGuess");
@@ -37,14 +37,23 @@ public class PlayerClientEndpoint implements IPlayerClientEndpoint {
 //		return "guess".equals(response);
 //	}
 //	
-	public PlayerDto getPlayer(String playerName) {
-		WebTarget target = webTarget.path(playerName);
+	public PlayerDto getPlayerByName(String playerName) {
+		System.out.println("HangmanClientEndpoint::getPlayerByName > "+playerName);
+		WebTarget target = webTarget.path("byName/"+playerName);
 		String response = target.request()
 				.accept(MediaType.TEXT_PLAIN).get(String.class);
 		System.out.println("HangmanClientEndpoint::getPlayer response = "+response);
-		
 		PlayerDto p = g.fromJson(response, PlayerDto.class);
-			
+		return p;
+	}
+	
+	public PlayerDto getPlayerById(long playerId) {
+		System.out.println("HangmanClientEndpoint::getPlayerById > "+playerId);
+		WebTarget target = webTarget.path("byId/"+playerId);
+		String response = target.request()
+				.accept(MediaType.TEXT_PLAIN).get(String.class);
+		System.out.println("HangmanClientEndpoint::getPlayer response = "+response);		
+		PlayerDto p = g.fromJson(response, PlayerDto.class);
 		System.out.println("HangmanClientEndpoint::getPlayer response = "+p.getName());
 		
 		return p;

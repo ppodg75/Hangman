@@ -5,10 +5,7 @@ import dto.PlayerDto;
 
 public interface IPlayerClientEndpoint {
 	
-	
-
-	PlayerDto getPlayer(String playerName);
-	
-
-	
+	PlayerDto getPlayerByName(String playerName);
+	PlayerDto getPlayerById(long playerId);
+		
 }

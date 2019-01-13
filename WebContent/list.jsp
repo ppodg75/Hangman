@@ -1,7 +1,12 @@
+<%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
 <%@include file="includes/header.jsp"%>
+<%@ page import=" utils.WordCodeDecode, dto.PlayerDto" %>
+<% 
+PlayerDto player = request.getAttribute("player")!=null?(PlayerDto)request.getAttribute("player"):null;
 
-<% String username = (request.getAttribute("username")!=null)?(String)request.getAttribute("username"):""; %>
-<input type="hidden" id="username" name="username" value="<%= username %>" />
+%>
+<input type="hidden" id="username" name="username" value="<%=player.getName()%>" />
+<input type="hidden" id="playerId" name="playerId" value="<%=player.getPlayerId() %>" />
         
 <div id="userdata">
 	<div class="user_name" id="user">Me</div>
@@ -27,7 +32,7 @@ function addToList(item, u) {
 	t += divClassValue("user_wins", "wins", item.countWins)
 	t += divClassValue("user_losts", "losts", item.countLosts) 
 	 
-	t += "<div class='user_buttons'><button type='button' form='main_form' onClick='playWith(\""+item.name+"\")' "
+	t += "<div class='user_buttons'><button type='button' form='main_form' onClick='playWith("+item.playerId+")' "
 	if (item.status=='PLAYING') t += " disabled"		
 	t += ">Play</button></div>"
 	t += "</div>";
@@ -35,11 +40,11 @@ function addToList(item, u) {
 }
 
 function addComputerToList(u) {
-	var t = "<div class='user"+u+"'><div class='user_name'>COMPUTER</div>";
-	t += divClassValue("user_points", "points", 0)
-	t += divClassValue("user_wins", "wins", 0)
-	t += divClassValue("user_losts", "losts", 0)
-	t += "<div class='user_buttons'><button type='button' form='main_form' onClick='playWith(\"COMPUTER\")'>Play</button></div>"
+	var t = "<div class='user"+u+"'><div class='computer_name'>COMPUTER</div>";
+	t += divClassValue("user_points", "", "")
+	t += divClassValue("user_wins", "", "")
+	t += divClassValue("user_losts", "", "")
+	t += "<div class='user_buttons'><button type='button' form='main_form' onClick='playWith(0)'>Play</button></div>"
 	t += "</div>";
 	return t;
 }

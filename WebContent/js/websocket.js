@@ -26,9 +26,6 @@ websocket.onmessage = function(evt) {
 	wsOnMessage(evt.data)
 };
 
-//function onMessage(evt) {
-//	console.log("ws: on msg")
-//}
 
 function wsSendMessage(msg) {
 	console.log('sendMessage: '+ msg)

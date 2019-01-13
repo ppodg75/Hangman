@@ -37,18 +37,30 @@ function getMsgData(msg) {
 	return msg.substring(4)
 }
 
+function getPlayerId() {
+	var playerId = $("#playerId").val()
+	console.log('playerId='+playerId)
+	return playerId 
+}
+
+
 function getUserName() {
-	return $("#username").val()
+	var username = $("#username").val()
+	return username 
+}
+
+function getUserNameConverted() {	
+	return codePolishWordToWordWithSpecs(getUserName()) 
 }
 
 function setUserName(un) {
-	$("#username").val(un)
+	$("#username").val(un )
 }
 
 function sendHello() {
-	SendOperationToServer("hello", getUserName())
+	SendOperationToServer("hello", getPlayerId())
 }
 
 function sendByeBye() {
-	SendOperationToServer("byebye", getUserName())
+	SendOperationToServer("byebye", getPlayerId())
 }
