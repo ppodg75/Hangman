@@ -6,15 +6,23 @@
 <% 
   PlayerDto player = request.getAttribute("player")!=null?(PlayerDto)request.getAttribute("player"):null;
   GameDto game = (request.getAttribute("game")!=null)?(GameDto)request.getAttribute("game"):new GameDto();
-  boolean waitForWord = "WAIT_FOR_WORD".equals(game.getGameStatus());
+  boolean waitForWord = "WAIT_FOR_WORD".equals(game.getGameStatus());  
+  boolean endGame = "END".equals(game.getGameStatus());
+  boolean winGame = false;
+  
   out.println("var waitForWord="+waitForWord); 
   String lettersUsed = "";
   String theWord = "";
+  String opponentName = "";
+  if (endGame) {
+	  winGame = game.getWinner().equals(player.getName());
+  }  
   if (game!=null) {
 	  theWord = WordCodeDecode.decodeWordWithSpecsToPolishWord((game.getTheWord()!=null)?game.getTheWord():"");
 	  out.println("var theWord='"+theWord+"'");
 	  lettersUsed = WordCodeDecode.decodeWordWithSpecsToPolishWord((game.getUsedLetters()!=null)?game.getUsedLetters():"");
 	  out.println("var lettersUsed='"+lettersUsed+"'");
+	  opponentName = game.getPlayerGuessName();
   }
 %>
 </script>
@@ -32,12 +40,15 @@
 	<div class="user_losts">
 		<span class="label">losts:</span> <span class="value"><%=  player.getCountLosts() %></span>
 	</div>
+	<div class="user_opponent">
+ 	  <span class="label">vs: </span><span class="opponent_name"><%= opponentName %></span>
+	</div>
 </div>
 
 <div id="pict_hangman"><img src="img/funny.jpg" height="300px" /></div>
 <br /><br />
 <% if (waitForWord) { %>
-<div id="enter_word">Enter your word: <input name="word" id="word_input" placeholder="enter a word" value="" />&nbsp;&nbsp;<button id="btnEnterWord" onClick="wordEntered()" type="button" form="main_form" >Send</button></div>
+<div id="enter_word">Enter your word: <input name="word" id="word_input" placeholder="enter a word" style="text-transform:uppercase" value="" />&nbsp;&nbsp;<button id="btnEnterWord" onClick="wordEntered()" type="button" form="main_form" >Send</button></div>
 <% } %>
 
 
@@ -52,14 +63,11 @@
 </div>
 
 <div id="winBox"> You won. Congratulations! </div>
-<div id="lostBox"> You lost!</div>		
-<div id="opponent_end_game"> Opponent finished game !</div>
-
-
-<div style="text-align: center; margin-top: 30px;"><button type="button" onClick="guess_end_game()">END GAME</button> </div>
+<div id="lostBox"> You lost!</div>
+<div id="button_end_game" style="text-align: center; margin-top: 30px;"><button type="button" onClick="guess_end_game()">END GAME</button> </div>
 
 <div id="dialog-confirm" title="End of the game?">
-  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Your opponent will get all points. Are you sure?</p>
+  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span><% if (!waitForWord) { out.print("Your opponent will get all points. "); } %>Are you sure?</p>
 </div>
 
 <script>

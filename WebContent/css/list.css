@@ -47,3 +47,13 @@
 	margin-left: 40px;
 	height: 25px;
 }
+
+.user_opponent {
+	float: left;
+	margin-left: 40px;
+	height: 25px;	
+}
+
+.opponent_name {
+	color: red;
+}

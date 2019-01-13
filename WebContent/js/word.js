@@ -33,10 +33,10 @@ function updateGame(game) {
 	printTheWord(game.theWord,game.usedLetters)
 	printUsedLetters(game.usedLetters)
 	if (game.gameStatus=="END") {
+		$("#button_end_game").hide();
 		if (game.winner== getUserName()) {
 			$("#winBox").show();			
-		} else {
-			
+		} else {			
 			$("#lostBox").show();
 		}
 		setTimeout(function() {
@@ -78,9 +78,9 @@ function wordEntered() {
 		alert("A word cann`t be empty and has to have minimum 4 letters!")
 		return false;
 	}
-	var letters = /^[A-Za-zĄĆĘŁŃÓŚŻŹ]+$/;
+	var letters = /^[A-Za-zĄĆĘŁŃÓŚŻŹąćęłńóśżź]+$/;
 	if (!word.match(letters)) {
-		alert("You can use only letters A-Z!")
+		alert("You can use only letters, no digits and special characters!")
 		return false;
 	}
 	var conv = codePolishWordToWordWithSpecs(word)

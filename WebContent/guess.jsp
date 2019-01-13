@@ -14,6 +14,7 @@
   boolean waitForWord = "WAIT_FOR_WORD".equals(game.getGameStatus());
   boolean endGame = "END".equals(game.getGameStatus());
   boolean winGame = false;
+  String opponentName = "";
   if (endGame) {
 	  winGame = game.getWinner().equals(player.getName());
   }
@@ -24,6 +25,7 @@
 	  out.println("var lettersUsed='"+lettersUsed+"'");
 	  System.out.println("GUESS.JSP: getGappedWord="+game.getGappedWord());
 	  if (!waitForWord) { gappedWord = WordCodeDecode.decodeWordWithSpecsToPolishWord(game.getGappedWord()); }
+	  opponentName = game.getPlayerWordName();
   }
   
   out.println("var gappedWord='"+gappedWord+"'");
@@ -43,6 +45,9 @@
 	</div>
 	<div class="user_losts">
 		<span class="label">losts:</span> <span class="value"><%=  player.getCountLosts() %></span>
+	</div>
+	<div class="user_opponent">
+ 	  <span class="label">vs: </span><span class="opponent_name"><%= opponentName %></span>
 	</div>
 </div>
 <div id="pict_hangman"><img src="img/<%= imgHangman %>" id="hangman" height="300px" /></div>
@@ -100,7 +105,7 @@ if (endGame) {
 <% } %>
 
 <div id="dialog-confirm" title="End of the game?">
-  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Your opponent will get one point. Are you sure?</p>
+  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span><% if (!waitForWord) { out.print("Your opponent will get one point. "); } %>Are you sure?</p>
 </div>
 <script>
 $( "#dialog-confirm" ).hide();

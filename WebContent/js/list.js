@@ -6,10 +6,6 @@ $("#dialog-disconnect").hide();
 var timerCounterFrom = 20;
 var timerCounter = timerCounterFrom;
 
-//function onMessage(evt) {
-//	console.log("ws: message: " + evt.data)
-//}
-
 function do_disconnect() {
 	sendByeBye()
 	submit_operation("disconnect", getPlayerId())
@@ -38,7 +34,7 @@ function buttonDisconnectClicked() {
 function showUser(user) {
 	console.log("showUser: " + user);
 	var un = user.name
-	$("#user").html("Me (" + un.toUpperCase() + ")");
+	$("#user").html("Me (" + un + ")");
 	$("#user_points").html(user.points);
 	$("#user_wins").html(user.countWins);
 	$("#user_losts").html(user.countLosts);
@@ -176,9 +172,8 @@ function playerAliveCanPlay(opponentId) {
 function playWith(opponentId) {	
 	if (opponentId == 0) {
 		submit_operation("playGame", 0)
-	} else {
-		if (confirm("You will be play with " + opponentId + "?")) {
+	} else 
+		{
 			playerAliveCanPlay(opponentId)
-		}
-	}
+		}	
 }

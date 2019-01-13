@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <title>Hangman (c) Piotr & Norbert</title>
 <link rel="stylesheet" type="text/css" href="css/main.css" />
+<link rel="stylesheet" type="text/css" href="css/index.css" />
 <link rel="stylesheet" type="text/css" href="css/guess.css" />
 <link rel="stylesheet" type="text/css" href="css/word.css" />
 <link rel="stylesheet" type="text/css" href="css/list.css" />
