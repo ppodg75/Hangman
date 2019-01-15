@@ -3,7 +3,7 @@ updateCurrentPage("list")
 $("#messageWait").hide();
 $("#dialog-disconnect").hide();
 
-var timerCounterFrom = 20;
+var timerCounterFrom = 10;
 var timerCounter = timerCounterFrom;
 
 function do_disconnect() {
@@ -13,7 +13,6 @@ function do_disconnect() {
 
 function buttonDisconnectClicked() {
 	console.log("disconnect: " + name)
-
 	$("#dialog-disconnect").dialog({
 		resizable : false,
 		height : "auto",
@@ -110,7 +109,8 @@ function timeToRefresh() {
 	console.log("timeToRefresh: " + timerCounter);
 	timerCounter--;
 	if (timerCounter <= 0) {
-		timerCounter = 20;
+		timerCounter = timerCounterFrom;
+		sendAlive()
 		refreshList();
 	}
 }
@@ -123,7 +123,7 @@ function timeout() {
 	}, 500);
 }
 
-// timeout()
+timeout()
 
 /* messages from websocket */
 function wsOnOpen() {

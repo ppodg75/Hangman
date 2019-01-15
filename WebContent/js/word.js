@@ -1,27 +1,27 @@
 updateCurrentPage("word")
 
-function do_guess_end_game() {
-	console.log("end_game");
-	submit_operation("end_game", letter);
-}
-
-function guess_end_game() {
-$( "#dialog-confirm" ).dialog({
-      resizable: false,
-      height: "auto",
-      width: 400,
-      modal: true,
-      buttons: {
-        "YES": function() {
-          $( this ).dialog( "close" );
-          do_guess_end_game();
-        },
-        No: function() {
-          $( this ).dialog("close");
-        }
-      }
-    });
-}
+//function do_guess_end_game() {
+//	console.log("end_game");
+//	submit_operation("end_game", letter);
+//}
+//
+//function guess_end_game() {
+//$( "#dialog-confirm" ).dialog({
+//      resizable: false,
+//      height: "auto",
+//      width: 400,
+//      modal: true,
+//      buttons: {
+//        "YES": function() {
+//          $( this ).dialog( "close" );
+//          do_guess_end_game();
+//        },
+//        No: function() {
+//          $( this ).dialog("close");
+//        }
+//      }
+//    });
+//}
 
 function wsOnOpen() {
 	console.log("wsOnOpen")
@@ -48,7 +48,8 @@ function updateGame(game) {
 function updateWordAndGameState() {
 	console.log("updateWordAndGameState")
 	var id = getPlayerId()
-	ep = getEndpointUrl("game") + "/gameByPlayerId/" + id, $.ajax({
+	ep = getEndpointUrl("game") + "/gameByPlayerId/" + id
+	$.ajax({
 		type : "GET",
 		url : ep,
 		success : function(data) {
@@ -63,13 +64,13 @@ function wsOnMessage(msg) {
 	console.log("wsOnMessage: " + msg)
 	if (msg == "letter") {
 		updateWordAndGameState()
-	} else 
-	if (msg == "opponnent_end_game") {
-		$("#opponent_end_game").show();
-		setTimeout(function() {
-			   goto_page("list")
-			}, 5000);
-	}
+	}  
+//	else if (msg == "opponnent_end_game") {
+//		$("#opponent_end_game").show();
+//		setTimeout(function() {
+//			   goto_page("list")
+//			}, 5000);
+//	}
 }
 
 function wordEntered() {
@@ -122,6 +123,15 @@ function printUsedLetters(letters) {
 	$("#letters").html(t)
 }
 
+
+function timeout() {
+	setTimeout(function() {
+		sendAlive()
+		timeout() 
+	}, 5000);
+}
+
+timeout()
 
 $("#word").focus()
 

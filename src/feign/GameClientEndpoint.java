@@ -47,15 +47,15 @@ public class GameClientEndpoint implements IGameClientEndpoint {
 		return "guess".equals(response);
 	}
 	
-	public void endGame(long playerId) {
-		System.out.println("GameClientEndpoint::createGameReturnTrueIfGuess");
-		WebTarget target = webTarget.path("endGame//"+playerId);
-
-		String response = target.request().accept(MediaType.TEXT_PLAIN).get(String.class);
-
-		System.out.println("GameClientEndpoint::createGameReturnTrueIfGuess response = " + response);
-		
-	}
+//	public void endGame(long playerId) {
+//		System.out.println("GameClientEndpoint::endGame");
+//		WebTarget target = webTarget.path("endGame/"+playerId);
+//
+//		String response = target.request().accept(MediaType.TEXT_PLAIN).get(String.class);
+//
+//		System.out.println("GameClientEndpoint::createGameReturnTrueIfGuess response = " + response);
+//		
+//	}
 
 //	public GameDto sendLetter(String playerName, String letter) {
 //		System.out.println("GameClientEndpoint::sendLetter "+playerName+" > "+letter);

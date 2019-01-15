@@ -13,6 +13,6 @@ public interface IGameClientEndpoint {
 	GameDto updateWord(long playerId, String word);
 	GameDto sendLetter(long playerId, String letter);
 	GameDto getGame(long playerId);
-	void endGame(long playerId);
+//	void endGame(long playerId);
 
 }

@@ -29,7 +29,7 @@ public class PageDispacherServlet extends HttpServlet {
 	private static final String OPERATION_WORD_UPDATED = "word_updated";
 	private static final String OPERATION_UPDATE_WORD = "update_word";
 	private static final String OPERATION_GOTO_PAGE = "goto_page";
-	private static final String OPERATION_END_GAME = "end_game";
+//	private static final String OPERATION_END_GAME = "end_game";
 
 	private static final String PAGE_INDEX = "index";
 	private static final String PAGE_LIST = "list";
@@ -73,6 +73,9 @@ public class PageDispacherServlet extends HttpServlet {
 			request.setAttribute(ATTR_NAME_PLAYERNAME, getUserName(request));					
 			if (OPERATION_DISCONNECT.equals(operation)) {
 				request.setAttribute(ATTR_NAME_PLAYERNAME, null);
+				request.setAttribute(ATTR_NAME_GAME, null);
+				setGameAttr = false;
+				setPlayerAttr = false;
 				nextPage = pageJsp(PAGE_INDEX);
 			} else if (OPERATION_START_GAME.equals(operation)) {
 				nextPage = pageJsp(getPlayerPage(playerId, Long.valueOf(data)));
@@ -83,11 +86,13 @@ public class PageDispacherServlet extends HttpServlet {
 				updateWord(request, playerId, data);
 				setGameAttr = false;
 			} else if (OPERATION_GOTO_PAGE.equals(operation)) {
+//				if (PAGE_LIST.equals(data)) { endGame(playerId); }
 				nextPage = pageJsp(data);
-			} else if (OPERATION_GOTO_PAGE.equals(operation)) {
-				endGame(playerId);
-				nextPage = pageJsp(PAGE_LIST);
-			}				
+			} 
+//			else if (OPERATION_END_GAME.equals(operation)) {
+//				endGame(playerId);
+//				nextPage = pageJsp(PAGE_LIST);
+//			}				
 		}
 		
 		if (playerId != -1) {			
@@ -167,10 +172,10 @@ public class PageDispacherServlet extends HttpServlet {
 		}
 	} 
 	
-	private void endGame(long playerId) {
-		System.out.println("HttpServlet::endGame");
-		gameClientEndpoint.endGame(playerId);
-	} 
+//	private void endGame(long playerId) {
+//		System.out.println("HttpServlet::endGame");
+//		gameClientEndpoint.endGame(playerId);
+//	} 
 
 	private void updateWord(HttpServletRequest request, long playerId, String word) {
 		System.out.println("HttpServlet::sendLetter > " + playerId + " > " + word);

@@ -1,27 +1,27 @@
 updateCurrentPage("guess")
 
-function do_guess_end_game() {
-	console.log("end_game");
-	submit_operation("end_game", letter);
-}
-
-function guess_end_game() {
-	$("#dialog-confirm").dialog({
-		resizable : false,
-		height : "auto",
-		width : 400,
-		modal : true,
-		buttons : {
-			"YES" : function() {
-				$(this).dialog("close");
-				do_guess_end_game();
-			},
-			No : function() {
-				$(this).dialog("close");
-			}
-		}
-	});
-}
+//function do_guess_end_game() {
+//	console.log("end_game");
+//	submit_operation("end_game", letter);
+//}
+//
+//function guess_end_game() {
+//	$("#dialog-confirm").dialog({
+//		resizable : false,
+//		height : "auto",
+//		width : 400,
+//		modal : true,
+//		buttons : {
+//			"YES" : function() {
+//				$(this).dialog("close");
+//				do_guess_end_game();
+//			},
+//			No : function() {
+//				$(this).dialog("close");
+//			}
+//		}
+//	});
+//}
 
 function guess_letter(letter, id) {
 	console.log("letter pressed: " + letter)
@@ -37,12 +37,13 @@ function wsOnOpen() {
 function wsOnMessage(data) {
 	if (data == "word_updated") {
 		submit_operation("word_updated", "")
-	} else if (msg == "opponnent_end_game") {
-		$("#opponent_end_game").show();
-		setTimeout(function() {
-			goto_page("list")
-		}, 5000);
-	}
+	} 
+//	else if (msg == "opponnent_end_game") {
+//		$("#opponent_end_game").show();
+//		setTimeout(function() {
+//			goto_page("list")
+//		}, 5000);
+//	}
 }
 
 function getGappedWord(gappedWord) {
@@ -58,8 +59,8 @@ function getGappedWord(gappedWord) {
 		}
 	}
 	return t;
-
 }
+
 
 function printGappedWord(word) {
 	$("#word_lettered").html(getGappedWord(word))
@@ -68,3 +69,12 @@ function printGappedWord(word) {
 if (gappedWord != null) {
 	printGappedWord(gappedWord)
 }
+
+function timeout() {
+	setTimeout(function() {
+		sendAlive()
+		timeout() 
+	}, 5000);
+}
+
+timeout()

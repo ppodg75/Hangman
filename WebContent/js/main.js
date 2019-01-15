@@ -64,3 +64,19 @@ function sendHello() {
 function sendByeBye() {
 	SendOperationToServer("byebye", getPlayerId())
 }
+
+function sendAlive() {
+	var id = getPlayerId()	
+	console.log('sendAlive: playerId='+id )
+	$.ajax({
+		type : "GET",
+		url : getEndpointUrl("players") + "/alive/" +id,
+		success : function(data) {
+			console.log("alive successed: ") // + data)
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) { 
+			console.log("alive error: ") // + data)
+        }       
+	})
+}
+

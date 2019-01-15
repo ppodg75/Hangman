@@ -15,14 +15,16 @@
   String theWord = "";
   String opponentName = "";
   if (endGame) {
-	  winGame = game.getWinner().equals(player.getName());
+	  System.out.println("word.jsp: winner="+game.getWinner());
+	  String winner = WordCodeDecode.decodeWordWithSpecsToPolishWord(game.getWinner()); 
+	  winGame = player.getName().equals(winner);
   }  
   if (game!=null) {
 	  theWord = WordCodeDecode.decodeWordWithSpecsToPolishWord((game.getTheWord()!=null)?game.getTheWord():"");
 	  out.println("var theWord='"+theWord+"'");
 	  lettersUsed = WordCodeDecode.decodeWordWithSpecsToPolishWord((game.getUsedLetters()!=null)?game.getUsedLetters():"");
 	  out.println("var lettersUsed='"+lettersUsed+"'");
-	  opponentName = game.getPlayerGuessName();
+	  opponentName = WordCodeDecode.decodeWordWithSpecsToPolishWord(game.getPlayerGuessName());
   }
 %>
 </script>
@@ -64,17 +66,17 @@
 
 <div id="winBox"> You won. Congratulations! </div>
 <div id="lostBox"> You lost!</div>
-<div id="button_end_game" style="text-align: center; margin-top: 30px;"><button type="button" onClick="guess_end_game()">END GAME</button> </div>
+<div id="button_end_game" style="text-align: center; margin-top: 30px;"><!--  button type="button" onClick="guess_end_game()">END GAME</button--> </div>
 
-<div id="dialog-confirm" title="End of the game?">
-  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span><% if (!waitForWord) { out.print("Your opponent will get all points. "); } %>Are you sure?</p>
-</div>
+<!-- div id="dialog-confirm" title="End of the game?">
+  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Are you sure?</p>
+</div -->
 
 <script>
-$("#dialog-confirm").hide();
+//$("#dialog-confirm").hide();
 $("#winBox").hide();
 $("#lostBox").hide();
-$("#opponent_end_game").hide();
+//$("#opponent_end_game").hide();
 
 if (waitForWord) {
   $("#word").hide();
